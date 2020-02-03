@@ -15,24 +15,41 @@
             <li> Employee 4</li>
             <li> Employee 5</li>
         </ol>
+        <button id="viewAllEmployees">View All Zoo Keepers</button>
     </div>
     <div>
-        <h2>Current Open Work Orders</h2>
-        <ol>
-            <li>Work Order 1</li>
-            <li>Work Order 2</li>
-            <li>Work Order 3</li>
-            <li>Work Order 4</li>
-            <li>Work Order 5</li>
-        </ol>
+        <table class="workOrders">
+            <legend>Current Open Work Orders</legend>
+            <thead>
+                <th>work_order_id</th>
+                <th>zookeeper_id</th>
+                <th>enclosure_id</th>
+                <th>task_name</th>
+                <th>available</th>
+                <th>overdue_status</th>
+                <th>accepted task</th>
+            </thead>
+            <tr>
+                <td>W1</td>
+                <td>Z1</td>
+                <td>E1</td>
+                <td>Sample Task</td>
+                <td>True</td>
+                <td>False</td>
+                <td>True</td>
+            </tr>
+        </table>
+        <button id="viewAllOrders">View All Work Orders</button>
     </div>
     <div>
-        <h2>Submit New Work Order</h2>
-        <form action="work_orders.html">
-            <input type="text" placeholder="task"><br>
-            <input type="text" placeholder="animal enclosure"><br>
-            <input type="text" placeholder="zookeeper"><br>
-            <input type="submit" value="submit">
+        <form action="newWorkOrder.html" method="GET">
+            <fieldset>
+                <legend>Submit New Work Order</legend>
+                <input type="text" placeholder="task"><br>
+                <input type="text" placeholder="animal enclosure"><br>
+                <input type="text" placeholder="zookeeper"><br>
+                <input type="submit" value="submit">
+            </fieldset> 
         </form>
     </div>
 </body>

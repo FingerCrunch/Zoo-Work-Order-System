@@ -1,3 +1,16 @@
 body {
     background-color: whitesmoke;
 }
+
+table, th, td {
+    border: 1px solid black;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 200%;
+}
+
+fieldset {
+    width: 37.5%;
+}
