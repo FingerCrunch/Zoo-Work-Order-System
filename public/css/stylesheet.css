@@ -11,6 +11,6 @@ legend {
     font-size: 200%;
 }
 
-fieldset {
-    width: 37.5%;
+input, select {
+    width: 15%;
 }

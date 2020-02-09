@@ -5,17 +5,20 @@
         Ticketing System - Date: <script> document.write(new Date().toLocaleDateString()); </script> 
     </h1>
     <div>
-        <h2>Current Employees On Shift</h2>
+        <h2>Current Employees On Shift</h2> <!-- Will use the On-Shift = True to fill this ordered list -->
         <ol>
-            <li> Employee 1</li>
-            <li> Employee 2</li>
-            <li> Employee 3</li>
-            <li> Employee 4</li>
-            <li> Employee 5</li>
+            <!-- When we implement the database, these will link to a detailed individual zookeeper page -->
+            <li><a href="/zookeepers">Employee 1</a></li>
+            <li><a href="/zookeepers">Employee 2</a></li>
+            <li><a href="/zookeepers">Employee 3</a></li>
+            <li><a href="/zookeepers">Employee 4</a></li>
+            <li><a href="/zookeepers">Employee 5</a></li>
         </ol>
-        <a href="/zookeepers">View All Zoo Keepers</a>
+        <!-- This button will pull up a table listing all information for all zookeepers in the database -->
+        <button><a href="/zookeepers">View All Zoo Keepers</a></button>
     </div>
     <div>
+        <!-- This will pull all open work orders into a table -->
         <table class="workOrders">
             <legend>Current Open Work Orders</legend>
             <thead>
@@ -37,16 +40,41 @@
                 <td>True</td>
             </tr>
         </table>
-        <a href="/workorders">View All Work Orders</a>
+        <button><a href="/workorders">View All Work Orders</a></button> <!-- View all including completed work orders -->
+        <button><a href="/workorders">Reassign Work Order</a></button>  <!-- Will be an edit route to reassign the zookeeper -->
     </div>
     <div>
+        <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
         <form action="/workorders" method="POST">
             <fieldset>
                 <legend>Submit New Work Order</legend>
-                <input type="text" placeholder="task"><br>
-                <input type="text" placeholder="animal enclosure"><br>
-                <input type="text" placeholder="zookeeper"><br>
-                <input type="submit" value="submit">
+                <textarea name="task" id="task" cols="30" rows="2" required placeholder="Task Description"></textarea><br>
+                <!-- I'm thinking we will hardcode the supplies or dynamically fill options from database -->
+                <select name="supplies" id="supplies" multiple required>Supplies Needed
+                    <option value="Supplies 1">Supplies 1</option>
+                    <option value="Supplies 2">Supplies 2</option>
+                    <option value="Supplies 3">Supplies 3</option>
+                    <option value="Supplies 4">Supplies 4</option>
+                    <option value="Supplies 5">Supplies 5</option>
+                    <option value="None">None</option>
+                </select><br>
+                <!-- Hard coded values - no reason to change -->
+                <select name="enclosure" required>
+                    <option value="Tigers">Tigers</option>
+                    <option value="Monkeys">Monkeys</option>
+                    <option value="Turtles">Turtles</option>
+                    <option value="Giraffes">Giraffes</option>
+                    <option value="Enclosure 5">Enclosure 5</option>
+                </select><br>
+                <!-- should create these the same way we fill the ordered list up top -->
+                <select name="zookeeper" required>
+                    <option value="Employee 1">Employee 1</option>
+                    <option value="Employee 2">Employee 2</option>
+                    <option value="Employee 3">Employee 3</option>
+                    <option value="Employee 4">Employee 4</option>
+                    <option value="Employee 5">Employee 5</option>
+                </select><br>
+                <button>Create New Work Order</button>
             </fieldset> 
         </form>
     </div>
