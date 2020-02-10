@@ -5,34 +5,21 @@
     <table>
         <legend>JavaScript will fill this table with all zookeepers in the database</legend>
         <thead>
+            <th>ID</th>
             <th>Name</th>
             <th>Phone Number</th>
             <th>Supervisor</th>
+            <th>OnShift Status</th>
         </thead>
-        <tr>
-            <td>Employee 1</td>
-            <td>888-888-8888</td>
-            <td>Supervisor 1</td>
-        </tr>
-        <tr>
-            <td>Employee 2</td>
-            <td>888-888-8888</td>
-            <td>Supervisor 2</td>
-        </tr>
-        <tr>
-            <td>Employee 3</td>
-            <td>888-888-8888</td>
-            <td>Supervisor 3</td>
-        </tr>
-        <tr>
-            <td>Employee 4</td>
-            <td>888-888-8888</td>
-            <td>Supervisor 4</td>
-        </tr>
-        <tr>
-            <td>Employee 5</td>
-            <td>888-888-8888</td>
-            <td>Supervisor 5</td>
-        </tr>
+        <% zookeepers.forEach(function(employee) { %>
+            <tr>
+                <td> <%= employee.zookeeper_id %> </td>
+                <td> <%= employee.first_name + " " + employee.last_name %> </td>
+                <td> <%= employee.phone_number %> </td>
+                <td> <%= employee.supervisor %> </td>
+                <td> <%= employee.onshift_status %> </td>
+            </tr>
+        <% }); %>
+        
     </table>
 <%- include("partials/footer") %>

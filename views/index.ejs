@@ -8,11 +8,9 @@
         <h2>Current Employees On Shift</h2> <!-- Will use the On-Shift = True to fill this ordered list -->
         <ol>
             <!-- When we implement the database, these will link to a detailed individual zookeeper page -->
-            <li><a href="/zookeepers">Employee 1</a></li>
-            <li><a href="/zookeepers">Employee 2</a></li>
-            <li><a href="/zookeepers">Employee 3</a></li>
-            <li><a href="/zookeepers">Employee 4</a></li>
-            <li><a href="/zookeepers">Employee 5</a></li>
+            <% zookeepers.forEach(function(zookeeper) { %>
+                <li> <%= zookeeper.first_name + " " + zookeeper.last_name %> </li>
+            <% }); %>
         </ol>
         <!-- This button will pull up a table listing all information for all zookeepers in the database -->
         <button><a href="/zookeepers">View All Zoo Keepers</a></button>
@@ -51,28 +49,22 @@
                 <textarea name="task" id="task" cols="30" rows="2" required placeholder="Task Description"></textarea><br>
                 <!-- I'm thinking we will hardcode the supplies or dynamically fill options from database -->
                 <select name="supplies" id="supplies" multiple required>Supplies Needed
-                    <option value="Supplies 1">Supplies 1</option>
-                    <option value="Supplies 2">Supplies 2</option>
-                    <option value="Supplies 3">Supplies 3</option>
-                    <option value="Supplies 4">Supplies 4</option>
-                    <option value="Supplies 5">Supplies 5</option>
                     <option value="None">None</option>
+                    <% supplies.forEach(function(supply) { %>
+                        <option value="<%= supply.supply_id %>"><%= supply.supply_name %></option>
+                    <%}); %>    
                 </select><br>
                 <!-- Hard coded values - no reason to change -->
                 <select name="enclosure" required>
-                    <option value="Tigers">Tigers</option>
-                    <option value="Monkeys">Monkeys</option>
-                    <option value="Turtles">Turtles</option>
-                    <option value="Giraffes">Giraffes</option>
-                    <option value="Enclosure 5">Enclosure 5</option>
+                    <% enclosures.forEach(function(enclosure) { %>
+                        <option value="<%= enclosure.enclosure_id %>"><%= enclosure.species %></option>
+                    <%}); %>   
                 </select><br>
                 <!-- should create these the same way we fill the ordered list up top -->
                 <select name="zookeeper" required>
-                    <option value="Employee 1">Employee 1</option>
-                    <option value="Employee 2">Employee 2</option>
-                    <option value="Employee 3">Employee 3</option>
-                    <option value="Employee 4">Employee 4</option>
-                    <option value="Employee 5">Employee 5</option>
+                    <% zookeepers.forEach(function(zookeeper) { %>
+                        <option value="<%= zookeeper.zookeeper_id %>"><%= zookeeper.first_name + " " + zookeeper.last_name %></option>
+                    <%}); %>    
                 </select><br>
                 <button>Create New Work Order</button>
             </fieldset> 
