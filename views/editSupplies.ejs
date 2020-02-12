@@ -1,0 +1,13 @@
+<%- include("partials/header") %>
+<div>
+    <h3>Edit Supplies</h3>
+    <% supplies.forEach(function(item){ %>   
+        <form action="/supplies/edit/<%=item.supply_id%>?_method=PUT" method="post">
+            Supply Name: <input type="text" name="supply_name" value="<%=item.supply_name%>"><br>
+            In Stock?: <input type="radio" name="in_stock" value="1">In Stock
+            <input type="radio" name="in_stock" value="0">Out of Stock<br>
+            <input type="submit" value="Edit Supplies">
+        </form><br>
+    <%})%>
+</div>
+<%- include("partials/footer") %>

@@ -122,6 +122,79 @@ app.put("/zookeepers/edit/:id", function(req, res){
     });
 });
 
+/* SHOW ROUTE - Show All Supplies */
+app.get("/supplies", function(req, res) {
+    pool.query('SELECT * FROM Supplies', function(err, supplies) {
+        if(err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+        else{
+            res.render("supplies", {supplies: supplies})};
+    });
+});
+
+/* ADD ROUTE - Add New Supply Item */
+app.post("/supplies", function(req, res){
+    var sql = "INSERT INTO Supplies (supply_name, in_stock) VALUES (?,?)";
+    var inserts = [req.body.supply_name, req.body.in_stock];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(JSON.stringify(error))
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/supplies');
+        }
+    });
+});
+
+/* DELETE ROUTE - Delete Supply Item */
+app.delete('/supplies/delete/:id', function(req, res){
+    var sql = "DELETE FROM Supplies WHERE supply_id = ?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.write(JSON.stringify(error));
+            res.status(400);
+            res.end();
+        }else{
+            res.redirect("/supplies");
+        }
+    })
+});
+
+/* SHOW ROUTE - Show Edit Supplies Page */
+app.get("/supplies/edit/:id", function(req, res) {
+    var sql = "SELECT * FROM Supplies WHERE supply_id = ?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(err, supplies) {
+        if(err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+        else{
+            res.render("editSupplies", {supplies: supplies})};
+    });
+});
+/* EDIT ROUTE - Edit Supply Row in Database */
+app.put("/supplies/edit/:id", function(req, res){
+    var sql = "UPDATE Supplies SET supply_name=?, in_stock=? WHERE supply_id=?";
+    var inserts = [req.body.supply_name, req.body.in_stock, req.params.id];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(JSON.stringify(error))
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/supplies');
+        }
+    });
+});
+
 
 
 /* Not working yet */
