@@ -50,15 +50,12 @@ app.get("/workorders", function(req, res) {
 /* SHOW ROUTE - Show All Zoo Keepers */
 app.get("/zookeepers", function(req, res) {
     let zookeepers = [];    // used to hold rows of information from MYSQL
-    pool.query('SELECT * FROM Zoo_Keepers', function(err, rows, field) {
+    pool.query('SELECT * FROM Zoo_Keepers', function(err, zookeepers) {
         if(err) {
             console.log(err);
         }
-        for (let i in rows) {
-            zookeepers.push(rows[i]);   // pushes each zookeeper row from MySQL into an array for us to manipulate
-            console.log(zookeepers[i]);
-        }
-        res.render("zookeepers", {zookeepers: zookeepers});     // this passes the zookeepers array to ejs file
+        else{
+            res.render("zookeepers", {zookeepers: zookeepers})};     // this passes the zookeepers array to ejs file
     });
 });
 
@@ -76,19 +73,22 @@ app.post("/zookeepers", function(req, res){
     });
 });
 
+app.delete("/zookeepers/delete/:id", function(req, res){
+    res.send("You have reached the delete route!");
+});
+
 
 // app.delete('/zookeepers/:id', function (req, res) {
-//     var mysql = req.app.get('mysql');
 //     var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
 //     var inserts = [req.params.id];
-//     sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+//     pool.query(sql, inserts, function(error, results, fields){
 //         if(error){
 //             console.log(error);
 //             res.write(JSON.stringify(error));
 //             res.status(400);
 //             res.end();
 //         }else{
-//             res.status(202).end();
+//             res.render('/zookeepers');
 //         }
 //     })
 //  });

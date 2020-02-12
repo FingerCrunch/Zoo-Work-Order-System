@@ -25,7 +25,10 @@
                     <td>NO</td>
                 <% } %>
                 <td><button class="editZookeeper" type="submit">Edit</button></td>
-                <td><button onclick="deleteZookeeper(<%= employee.zookeeper_id %>)">Delete</button></td>
+                <td><form action="/zookeepers/delete/<%=employee.zookeeper_id%>?_method=DELETE" method="POST">
+                    <button>DELETE</button>
+                    </form>
+                </td>
             </tr>
         <% }); %>
     </table><br>
