@@ -1,0 +1,14 @@
+<%- include("partials/header") %>
+<div>
+    <h3>Edit Zookeeper</h3>
+    <% zookeepers.forEach(function(employee){ %>   
+        <form action="/zookeepers/edit/<%=employee.zookeeper_id%>?_method=PUT" method="post">
+            First Name: <input type="text" name="fname" value="<%=employee.first_name%>"><br>
+            Last Name: <input type="text" name="lname" value="<%=employee.last_name%>"><br>
+            Phone Number: <input type="number" name="phoneNumber" value="<%=employee.phone_number%>"><br>
+            Supervisor: <input type="text" name="supervisor" value="<%=employee.supervisor%>"><br>
+            <input type="submit" value="Edit Zookeeper">
+        </form><br>
+    <%})%>
+</div>
+<%- include("partials/footer") %>

@@ -7,6 +7,8 @@ var bodyParser = require("body-parser"),
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(__dirname + "/public"));
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 /* INDEX ROUTE - Home Page */
 app.get("/", function(req,res) {
@@ -49,16 +51,18 @@ app.get("/workorders", function(req, res) {
 
 /* SHOW ROUTE - Show All Zoo Keepers */
 app.get("/zookeepers", function(req, res) {
-    let zookeepers = [];    // used to hold rows of information from MYSQL
     pool.query('SELECT * FROM Zoo_Keepers', function(err, zookeepers) {
         if(err) {
-            console.log(err);
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
         }
         else{
-            res.render("zookeepers", {zookeepers: zookeepers})};     // this passes the zookeepers array to ejs file
+            res.render("zookeepers", {zookeepers: zookeepers})};
     });
 });
 
+/* ADD ROUTE - Add New Zoo Keeper */
 app.post("/zookeepers", function(req, res){
     var sql = "INSERT INTO Zoo_Keepers (first_name, last_name, phone_number, supervisor) VALUES (?,?,?,?)";
     var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor];
@@ -73,25 +77,52 @@ app.post("/zookeepers", function(req, res){
     });
 });
 
-app.delete("/zookeepers/delete/:id", function(req, res){
-    res.send("You have reached the delete route!");
+/* DELETE ROUTE - Delete Zoo Keeper */
+app.delete('/zookeepers/delete/:id', function(req, res){
+    var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(error)
+            res.write(JSON.stringify(error));
+            res.status(400);
+            res.end();
+        }else{
+            res.redirect("/zookeepers");
+        }
+    })
+});
+
+/* SHOW ROUTE - Show Edit Zookeeper Page */
+app.get("/zookeepers/edit/:id", function(req, res) {
+    var sql = "SELECT * FROM Zoo_Keepers WHERE zookeeper_id = ?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(err, zookeepers) {
+        if(err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+        else{
+            res.render("editZookeepers", {zookeepers: zookeepers})};
+    });
+});
+/* EDIT ROUTE - Edit Zookeeper Row in Database */
+app.put("/zookeepers/edit/:id", function(req, res){
+    var sql = "UPDATE Zoo_Keepers SET first_name=?, last_name=?, phone_number=?, supervisor=? WHERE zookeeper_id=?";
+    var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor, req.params.id];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(JSON.stringify(error))
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/zookeepers');
+        }
+    });
 });
 
 
-// app.delete('/zookeepers/:id', function (req, res) {
-//     var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
-//     var inserts = [req.params.id];
-//     pool.query(sql, inserts, function(error, results, fields){
-//         if(error){
-//             console.log(error);
-//             res.write(JSON.stringify(error));
-//             res.status(400);
-//             res.end();
-//         }else{
-//             res.render('/zookeepers');
-//         }
-//     })
-//  });
 
 /* Not working yet */
 /* NEW ROUTE - Push New Work Order to DB */

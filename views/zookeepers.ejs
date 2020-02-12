@@ -24,9 +24,12 @@
                 <% } else {%>
                     <td>NO</td>
                 <% } %>
-                <td><button class="editZookeeper" type="submit">Edit</button></td>
+                <td><form action="/zookeepers/edit/<%=employee.zookeeper_id%>" method="GET">
+                    <button type="submit">EDIT</button>
+                    </form>
+                </td>
                 <td><form action="/zookeepers/delete/<%=employee.zookeeper_id%>?_method=DELETE" method="POST">
-                    <button>DELETE</button>
+                    <button type="submit">DELETE</button>
                     </form>
                 </td>
             </tr>
