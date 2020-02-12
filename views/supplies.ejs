@@ -1,0 +1,39 @@
+<%- include("partials/header") %>
+<body>
+    <h1>Supplies</h1>
+    <table>
+        <thead>
+            <th>ID</th>
+            <th>Name of Supply</th>
+            <th>In Stock?</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <% supplies.forEach(function(item) { %>
+            <tr>
+                <td> <%= item.supply_id %> </td>
+                <td> <%= item.supply_name %> </td>
+                <% if (item.in_stock === 1) { %>
+                    <td>YES</td>
+                <% } else {%>
+                    <td>NO</td>
+                <% } %>
+                <td><form action="/supplies/edit/<%=item.supply_id%>" method="GET">
+                    <button type="submit">EDIT</button>
+                    </form>
+                </td>
+                <td><form action="/supplies/delete/<%=item.supply_id%>?_method=DELETE" method="POST">
+                    <button type="submit">DELETE</button>
+                    </form>
+                </td>
+            </tr>
+        <% }); %>
+    </table><br>
+    <h3>Add New Supply Item</h3>
+    <form action="/supplies" method="post">
+        Supply Name: <input type="text" name="supply_name"><br>
+        In Stock?: <input type="radio" name="in_stock" value="1">In Stock
+        <input type="radio" name="in_stock" value="0">Out of Stock<br>
+        <input type="submit" value="Add New Supply Item">
+     </form><br>
+<%- include("partials/footer") %>
