@@ -62,6 +62,37 @@ app.get("/zookeepers", function(req, res) {
     });
 });
 
+app.post("/zookeepers", function(req, res){
+    var sql = "INSERT INTO Zoo_Keepers (first_name, last_name, phone_number, supervisor) VALUES (?,?,?,?)";
+    var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(JSON.stringify(error))
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/zookeepers');
+        }
+    });
+});
+
+
+// app.delete('/zookeepers/:id', function (req, res) {
+//     var mysql = req.app.get('mysql');
+//     var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
+//     var inserts = [req.params.id];
+//     sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+//         if(error){
+//             console.log(error);
+//             res.write(JSON.stringify(error));
+//             res.status(400);
+//             res.end();
+//         }else{
+//             res.status(202).end();
+//         }
+//     })
+//  });
+
 /* Not working yet */
 /* NEW ROUTE - Push New Work Order to DB */
 app.post("/workorders", function(req,res) {
