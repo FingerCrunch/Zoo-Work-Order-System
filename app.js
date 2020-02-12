@@ -50,17 +50,48 @@ app.get("/workorders", function(req, res) {
 /* SHOW ROUTE - Show All Zoo Keepers */
 app.get("/zookeepers", function(req, res) {
     let zookeepers = [];    // used to hold rows of information from MYSQL
-    pool.query('SELECT * FROM Zoo_Keepers', function(err, rows, field) {
+    pool.query('SELECT * FROM Zoo_Keepers', function(err, zookeepers) {
         if(err) {
             console.log(err);
         }
-        for (let i in rows) {
-            zookeepers.push(rows[i]);   // pushes each zookeeper row from MySQL into an array for us to manipulate
-            console.log(zookeepers[i]);
-        }
-        res.render("zookeepers", {zookeepers: zookeepers});     // this passes the zookeepers array to ejs file
+        else{
+            res.render("zookeepers", {zookeepers: zookeepers})};     // this passes the zookeepers array to ejs file
     });
 });
+
+app.post("/zookeepers", function(req, res){
+    var sql = "INSERT INTO Zoo_Keepers (first_name, last_name, phone_number, supervisor) VALUES (?,?,?,?)";
+    var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor];
+    pool.query(sql, inserts, function(error, results, fields){
+        if(error){
+            console.log(JSON.stringify(error))
+            res.write(JSON.stringify(error));
+            res.end();
+        }else{
+            res.redirect('/zookeepers');
+        }
+    });
+});
+
+app.delete("/zookeepers/delete/:id", function(req, res){
+    res.send("You have reached the delete route!");
+});
+
+
+// app.delete('/zookeepers/:id', function (req, res) {
+//     var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
+//     var inserts = [req.params.id];
+//     pool.query(sql, inserts, function(error, results, fields){
+//         if(error){
+//             console.log(error);
+//             res.write(JSON.stringify(error));
+//             res.status(400);
+//             res.end();
+//         }else{
+//             res.render('/zookeepers');
+//         }
+//     })
+//  });
 
 /* Not working yet */
 /* NEW ROUTE - Push New Work Order to DB */
