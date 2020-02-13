@@ -109,8 +109,8 @@ app.get("/zookeepers/edit/:id", function(req, res) {
 });
 /* EDIT ROUTE - Edit Zookeeper Row in Database */
 app.put("/zookeepers/edit/:id", function(req, res){
-    var sql = "UPDATE Zoo_Keepers SET first_name=?, last_name=?, phone_number=?, supervisor=? WHERE zookeeper_id=?";
-    var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor, req.params.id];
+    var sql = "UPDATE Zoo_Keepers SET first_name=?, last_name=?, phone_number=?, supervisor=?, onshift_status=? WHERE zookeeper_id=?";
+    var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor, req.body.onshift_status, req.params.id];
     pool.query(sql, inserts, function(error, results, fields){
         if(error){
             console.log(JSON.stringify(error))
