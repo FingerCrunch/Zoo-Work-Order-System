@@ -14,3 +14,7 @@ legend {
 input, select {
     width: 15%;
 }
+
+div {
+    padding: 10px;
+}
