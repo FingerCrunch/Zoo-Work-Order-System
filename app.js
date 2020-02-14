@@ -16,7 +16,7 @@ app.use(methodOverride('_method'));
 
 /* INDEX ROUTE - Home Page */
 app.get("/", function(req,res) {
-    let zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
+    var zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
@@ -127,7 +127,8 @@ app.get("/zookeepers/edit/:id", function(req, res) {
             res.end();
         }
         else{
-            res.render("editZookeepers", {zookeepers: zookeepers})};
+            res.render("editZookeepers", {zookeepers: zookeepers});
+        }
     });
 });
 /* EDIT ROUTE - Edit Zookeeper Row in Database */
@@ -151,13 +152,14 @@ app.put("/zookeepers/edit/:id", function(req, res){
 
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
-    var sql = "SELECT * FROM Work_Orders";
+    var sql = "SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, ae.species, wo.task_name, s.supply_name, wo.available, wo.available_time, wo.overdue_time, wo.overdue_status, wo.accepted_task, wo.completed_task FROM Work_Orders AS wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae ON wo.enclosure_id = ae.enclosure_id INNER JOIN Supplies AS s ON s.supply_id = wo.supply_id";
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
             res.end();
         } else {
+            console.log(workOrders);
             res.render("workOrder", {workOrders: workOrders});
         }
     });
@@ -165,20 +167,81 @@ app.get("/workorders", function(req, res) {
 
 /* NEW ROUTE - Push New Work Order to DB */
 app.post("/workorders", function(req,res) {
-    var sql = 'INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, overdue_status, accepted) VALUES (zookeeper, enclosure, task, supply, available, overdue, accepted)';
-    pool.query(sql, function(err, rows, field) {
-     
+    var sql = "INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, available_time, overdue_time, overdue_status, accepted_task, completed_task) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.body.supply_id, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];
+    pool.query(sql, inserts, function(err, rows, field) {
+        if(err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        } else {
+            res.redirect('/workorders');
+        }
     });
 });
 
 /* DELETE ROUTE - Delete Work Order */
 app.delete("/workorders/delete/:id", function(req, res) {
-
+    var sql = "DELETE FROM Work_Orders WHERE work_order_id = ?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(err, results, fields) {
+        if(err){
+            console.log(err)
+            res.write(JSON.stringify(err));
+            res.status(400);
+            res.end();
+        } else{
+            res.redirect("/workorders");
+        }
+    });
 });
 
 /* SHOW ROUTE - Show Edit Work Orders Page */
 app.get("/workorders/edit/:id", function(req, res) {
-
+    var zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
+    var sql = "SELECT * FROM Work_Orders WHERE work_order_id = ?",
+        sql2 = "SELECT * FROM Supplies",
+        sql3 = "SELECT * FROM Animal_Enclosures",
+        sql4 = "SELECT * FROM Zoo_Keepers"; 
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(err, workOrders) {
+        if(err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        }
+        pool.query(sql2, function(err2, rows2, field2) {
+            if(err2) {
+                console.log(JSON.stringify(err2))
+                res.write(JSON.stringify(err2));
+                res.end();
+            }
+            for (var i in rows2) {
+                supplies.push(rows2[i]);
+            }
+            pool.query(sql3, function(err3, rows3, field3) {
+                if (err3) {
+                    console.log(JSON.stringify(err2))
+                    res.write(JSON.stringify(err2));
+                    res.end();
+                }
+                for (var i in rows3) {
+                    enclosures.push(rows3[i]);
+                }
+                pool.query(sql4, function(err4, rows4, field4) {
+                    if (err4) {
+                        console.log(JSON.stringify(err2))
+                        res.write(JSON.stringify(err2));
+                        res.end();
+                    }
+                    for (var i in rows4) {
+                        zookeepers.push(rows4[i]);
+                    }
+                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies});
+                });
+            });
+        });
+    });
 });
 
 /* EDIT ROUTE - Edit Work Order */

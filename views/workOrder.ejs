@@ -5,28 +5,34 @@
     <h1>This is the Detailed Work Order Page</h1>
     <!-- This will pull all open work orders into a table -->
     <table class="workOrders">
-        <legend>Current Open Work Orders</legend>
+        <legend>Work Order History</legend>
         <thead>
-            <th>work_order_id</th>
-            <th>zookeeper_id</th>
-            <th>enclosure_id</th>
-            <th>task_name</th>
-            <th>supply_id</th>
-            <th>available</th>
-            <th>available_time</th>
-            <th>overdue_time</th>
-            <th>overdue_status</th>
-            <th>accepted task</th>
-            <th>completed_task</th>
+            <th>ID</th>
+            <th>Zookeeper First Name </th>
+            <th>Zookeeper Last Name </th>
+            <th>Location</th>
+            <th>Species</th>
+            <th>Task</th>
+            <th>Supply Needed</th>
+            <th>Available</th>
+            <th>Available Date</th>
+            <th>Overdue Date</th>
+            <th>Overdue Status</th>
+            <th>Accepted</th>
+            <th>Complete</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </thead>
         <tbody>
             <% workOrders.forEach(function(ticket) { %>
                 <tr>
                     <td> <%= ticket.work_order_id %> </td>
-                    <td> <%= ticket.zookeeper_id %> </td>
-                    <td> <%= ticket.enclosure_id %> </td>
+                    <td> <%= ticket.first_name %> </td>
+                    <td> <%= ticket.last_name %> </td>
+                    <td> <%= ticket.location %> </td>
+                    <td> <%= ticket.species %> </td>
                     <td> <%= ticket.task_name %> </td>
-                    <td> <%= ticket.supply_id %> </td>
+                    <td> <%= ticket.supply_name %> </td>
                     <% if (ticket.available === 1) { %>
                         <td>YES</td>
                     <% } else { %>
@@ -49,10 +55,16 @@
                     <% } else { %>
                         <td>NO</td>
                     <% } %>
+                    <td><form action="/workorders/edit/<%=ticket.work_order_id%>" method="GET">
+                        <button type="submit">EDIT</button>
+                        </form>
+                    </td>
+                    <td><form action="/workorders/delete/<%=ticket.work_order_id%>?_method=DELETE" method="POST">
+                        <button type="submit">DELETE</button>
+                        </form>
+                    </td>
                 </tr>
             <% }); %>
-            <tr>
-            </tr>
         </tbody>
     </table>
 
