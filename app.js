@@ -23,7 +23,9 @@ app.get("/", function(req,res) {
         sql4 = 'SELECT * FROM Work_Orders';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
-            console.log(err1);
+            console.log(JSON.stringify(err1))
+            res.write(JSON.stringify(err1));
+            res.end();
         }
         for (let i in rows1) {      // pushes each zookeeper row from MySQL into an array for us to manipulate
             zookeepers.push(rows1[i]);
@@ -31,7 +33,9 @@ app.get("/", function(req,res) {
         }
         pool.query(sql2, function(err2, rows2, field2) {   
             if(err2) {
-                console.log(err2);
+                console.log(JSON.stringify(err2))
+                res.write(JSON.stringify(err2));
+                res.end();
             }
             for (let i in rows2) {      // pushes each supply row from MySQL into an array for us to manipulate
                 supplies.push(rows2[i]);
@@ -39,7 +43,9 @@ app.get("/", function(req,res) {
             }
             pool.query(sql3, function(err3, rows3, field3) {   
                 if(err3) {
-                    console.log(err3);
+                    console.log(JSON.stringify(err3))
+                    res.write(JSON.stringify(err3));
+                    res.end();
                 }
                 for (let i in rows3) {  // pushes each animal enclosure row from MySQL into an array for us to manipulate
                     enclosures.push(rows3[i]);
@@ -47,7 +53,9 @@ app.get("/", function(req,res) {
                 }
                 pool.query(sql4, function(err4, rows4, field4) {
                     if (err4) {
-                        console.log(err4);
+                        console.log(JSON.stringify(err4))
+                        res.write(JSON.stringify(err4));
+                        res.end();
                     } 
                     for (var i in rows4) {
                         workOrders.push(rows4[i]);
@@ -65,7 +73,8 @@ app.get("/", function(req,res) {
 
 /* SHOW ROUTE - Show All Zoo Keepers */
 app.get("/zookeepers", function(req, res) {
-    pool.query('SELECT * FROM Zoo_Keepers', function(err, zookeepers) {
+    var sql = 'SELECT * FROM Zoo_Keepers';
+    pool.query(sql, function(err, zookeepers) {
         if(err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
@@ -80,10 +89,10 @@ app.get("/zookeepers", function(req, res) {
 app.post("/zookeepers", function(req, res){
     var sql = "INSERT INTO Zoo_Keepers (first_name, last_name, phone_number, supervisor) VALUES (?,?,?,?)";
     var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(JSON.stringify(error))
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
             res.end();
         }else{
             res.redirect('/zookeepers');
@@ -95,10 +104,10 @@ app.post("/zookeepers", function(req, res){
 app.delete('/zookeepers/delete/:id', function(req, res){
     var sql = "DELETE FROM Zoo_Keepers WHERE zookeeper_id = ?";
     var inserts = [req.params.id];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(error)
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(err)
+            res.write(JSON.stringify(err));
             res.status(400);
             res.end();
         }else{
@@ -125,10 +134,10 @@ app.get("/zookeepers/edit/:id", function(req, res) {
 app.put("/zookeepers/edit/:id", function(req, res){
     var sql = "UPDATE Zoo_Keepers SET first_name=?, last_name=?, phone_number=?, supervisor=?, onshift_status=? WHERE zookeeper_id=?";
     var inserts = [req.body.fname, req.body.lname, req.body.phoneNumber, req.body.supervisor, req.body.onshift_status, req.params.id];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(JSON.stringify(error))
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
             res.end();
         }else{
             res.redirect('/zookeepers');
@@ -156,16 +165,8 @@ app.get("/workorders", function(req, res) {
 
 /* NEW ROUTE - Push New Work Order to DB */
 app.post("/workorders", function(req,res) {
-    let zookeeper = req.body.zookeeper,
-        enclosure = req.body.enclosure,
-        task      = req.body.task,
-        supply    = req.body.supplies,
-        available = true,
-        overdue   = false,
-        accepted = true;
-    
-    let workOrder = [];
-    pool.query('INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, overdue_status, accepted) VALUES (zookeeper, enclosure, task, supply, available, overdue, accepted)', function(err, rows, field) {
+    var sql = 'INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, overdue_status, accepted) VALUES (zookeeper, enclosure, task, supply, available, overdue, accepted)';
+    pool.query(sql, function(err, rows, field) {
      
     });
 });
@@ -190,7 +191,8 @@ app.put("/workorders/edit/:id", function(req, res) {
 *********************************************************/
 /* SHOW ROUTE - Show All Supplies */
 app.get("/supplies", function(req, res) {
-    pool.query('SELECT * FROM Supplies', function(err, supplies) {
+    var sql = 'SELECT * FROM Supplies';
+    pool.query(sql, function(err, supplies) {
         if(err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
@@ -205,10 +207,10 @@ app.get("/supplies", function(req, res) {
 app.post("/supplies", function(req, res){
     var sql = "INSERT INTO Supplies (supply_name, in_stock) VALUES (?,?)";
     var inserts = [req.body.supply_name, req.body.in_stock];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(JSON.stringify(error))
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
             res.end();
         }else{
             res.redirect('/supplies');
@@ -220,10 +222,10 @@ app.post("/supplies", function(req, res){
 app.delete('/supplies/delete/:id', function(req, res){
     var sql = "DELETE FROM Supplies WHERE supply_id = ?";
     var inserts = [req.params.id];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(error)
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(err)
+            res.write(JSON.stringify(err));
             res.status(400);
             res.end();
         }else{
@@ -246,14 +248,15 @@ app.get("/supplies/edit/:id", function(req, res) {
             res.render("editSupplies", {supplies: supplies})};
     });
 });
+
 /* EDIT ROUTE - Edit Supply Row in Database */
 app.put("/supplies/edit/:id", function(req, res){
     var sql = "UPDATE Supplies SET supply_name=?, in_stock=? WHERE supply_id=?";
     var inserts = [req.body.supply_name, req.body.in_stock, req.params.id];
-    pool.query(sql, inserts, function(error, results, fields){
-        if(error){
-            console.log(JSON.stringify(error))
-            res.write(JSON.stringify(error));
+    pool.query(sql, inserts, function(err, results, fields){
+        if(err){
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
             res.end();
         }else{
             res.redirect('/supplies');
@@ -271,7 +274,9 @@ app.get("/enclosures", function(req,res) {
     var enclosures = [];
     pool.query(sql, function(err, rows, fields) {
         if(err) {
-            console.log(err);
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
         }
         for (let i in rows) {      // pushes each zookeeper row from MySQL into an array for us to manipulate
             enclosures.push(rows[i]);
@@ -332,8 +337,8 @@ app.put('/enclosures/edit/:id', function(req, res) {
    var inserts = [req.body.location, req.body.size_sqft, req.body.species, req.body.total_number, req.body.diet_type, req.params.id];
    pool.query(sql, inserts, function(err, results, fields) {
     if (err) {
-        console.log(JSON.stringify(error))
-        res.write(JSON.stringify(error));
+        console.log(JSON.stringify(err))
+        res.write(JSON.stringify(err));
         res.end();
     } else {
         res.redirect("/enclosures");
