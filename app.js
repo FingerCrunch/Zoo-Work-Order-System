@@ -17,7 +17,11 @@ app.use(methodOverride('_method'));
 /* INDEX ROUTE - Home Page */
 app.get("/", function(req,res) {
     let zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
-    pool.query('SELECT * FROM Zoo_Keepers WHERE onshift_status = 1', function(err1, rows1, field1) {
+    var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
+        sql2 = 'SELECT * FROM Supplies',
+        sql3 = 'SELECT * FROM Animal_Enclosures',
+        sql4 = 'SELECT * FROM Work_Orders';
+    pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(err1);
         }
@@ -25,7 +29,7 @@ app.get("/", function(req,res) {
             zookeepers.push(rows1[i]);
             // console.log(zookeepers[i]);
         }
-        pool.query('SELECT * FROM Supplies', function(err2, rows2, field2) {   
+        pool.query(sql2, function(err2, rows2, field2) {   
             if(err2) {
                 console.log(err2);
             }
@@ -33,7 +37,7 @@ app.get("/", function(req,res) {
                 supplies.push(rows2[i]);
                 // console.log(supplies[i]);
             }
-            pool.query('SELECT * FROM Animal_Enclosures', function(err3, rows3, field3) {   
+            pool.query(sql3, function(err3, rows3, field3) {   
                 if(err3) {
                     console.log(err3);
                 }
@@ -41,7 +45,7 @@ app.get("/", function(req,res) {
                     enclosures.push(rows3[i]);
                     // console.log(enclosures[i]);
                 }
-                pool.query('SELECT * FROM Work_Orders', function(err4, rows4, field4) {
+                pool.query(sql4, function(err4, rows4, field4) {
                     if (err4) {
                         console.log(err4);
                     } 
