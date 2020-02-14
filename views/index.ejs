@@ -24,26 +24,55 @@
                 <th>zookeeper_id</th>
                 <th>enclosure_id</th>
                 <th>task_name</th>
+                <th>supply_id</th>
                 <th>available</th>
+                <th>available_time</th>
+                <th>overdue_time</th>
                 <th>overdue_status</th>
                 <th>accepted task</th>
+                <th>completed_task</th>
             </thead>
-            <tr>
-                <td>W1</td>
-                <td>Z1</td>
-                <td>E1</td>
-                <td>Sample Task</td>
-                <td>True</td>
-                <td>False</td>
-                <td>True</td>
-            </tr>
+            <tbody>
+                <% workOrders.forEach(function(ticket) { %>
+                    <tr>
+                        <td> <%= ticket.work_order_id %> </td>
+                        <td> <%= ticket.zookeeper_id %> </td>
+                        <td> <%= ticket.enclosure_id %> </td>
+                        <td> <%= ticket.task_name %> </td>
+                        <td> <%= ticket.supply_id %> </td>
+                        <% if (ticket.available === 1) { %>
+                            <td>YES</td>
+                        <% } else { %>
+                            <td>NO</td>
+                        <% } %>
+                        <td> <%= ticket.available_time %> </td>
+                        <td> <%= ticket.overdue_time %> </td>
+                        <% if (ticket.overdue_status === 1) { %>
+                            <td>YES</td>
+                        <% } else { %>
+                            <td>NO</td>
+                        <% } %>
+                        <% if (ticket.accepted_task === 1) { %>
+                            <td>YES</td>
+                        <% } else { %>
+                            <td>NO</td>
+                        <% } %>
+                        <% if (ticket.completed_task === 1) { %>
+                            <td>YES</td>
+                        <% } else { %>
+                            <td>NO</td>
+                        <% } %>
+                    </tr>
+                <% }); %>
+                <tr>
+                </tr>
+            </tbody>
         </table>
         <button><a href="/workorders">View All Work Orders</a></button> <!-- View all including completed work orders -->
-        <button><a href="/workorders">Reassign Work Order</a></button>  <!-- Will be an edit route to reassign the zookeeper -->
     </div>
     <div>
         <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
-        <form action="/workorders" method="POST">
+        <form id="addWorkOrder" action="/workorders" method="POST">
             <fieldset>
                 <legend>Submit New Work Order</legend>
                 <textarea name="task" id="task" cols="30" rows="2" required placeholder="Task Description"></textarea><br>

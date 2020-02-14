@@ -12,14 +12,14 @@ app.use(methodOverride('_method'));
 
 /* INDEX ROUTE - Home Page */
 app.get("/", function(req,res) {
-    let zookeepers = [], supplies = [], enclosures = [];       // used to hold rows of information from MySQL
+    let zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
     pool.query('SELECT * FROM Zoo_Keepers WHERE onshift_status = 1', function(err1, rows1, field1) {
         if(err1) {
             console.log(err1);
         }
         for (let i in rows1) {      // pushes each zookeeper row from MySQL into an array for us to manipulate
             zookeepers.push(rows1[i]);
-            console.log(zookeepers[i]);
+            // console.log(zookeepers[i]);
         }
         pool.query('SELECT * FROM Supplies', function(err2, rows2, field2) {   
             if(err2) {
@@ -27,7 +27,7 @@ app.get("/", function(req,res) {
             }
             for (let i in rows2) {      // pushes each supply row from MySQL into an array for us to manipulate
                 supplies.push(rows2[i]);
-                console.log(supplies[i]);
+                // console.log(supplies[i]);
             }
             pool.query('SELECT * FROM Animal_Enclosures', function(err3, rows3, field3) {   
                 if(err3) {
@@ -35,9 +35,17 @@ app.get("/", function(req,res) {
                 }
                 for (let i in rows3) {  // pushes each animal enclosure row from MySQL into an array for us to manipulate
                     enclosures.push(rows3[i]);
-                    console.log(enclosures[i]);
+                    // console.log(enclosures[i]);
                 }
-                res.render("index", {zookeepers: zookeepers, supplies: supplies, enclosures: enclosures});      // this passes the zookeepers, supplies, and enclosures array to ejs file
+                pool.query('SELECT * FROM Work_Orders', function(err4, rows4, field4) {
+                    if (err4) {
+                        console.log(err4);
+                    } 
+                    for (var i in rows4) {
+                        workOrders.push(rows4[i]);
+                    }
+                    res.render("index", {zookeepers: zookeepers, supplies: supplies, enclosures: enclosures, workOrders: workOrders});      // this passes the zookeepers, supplies, and enclosures array to ejs file
+                });
             }); 
         });
     });
@@ -195,7 +203,81 @@ app.put("/supplies/edit/:id", function(req, res){
     });
 });
 
+/* SHOW ROUTE - Animal Enclosures */
+app.get("/enclosures", function(req,res) {
+    var sql = "SELECT * FROM Animal_Enclosures";
+    var enclosures = [];
+    pool.query(sql, function(err, rows, fields) {
+        if(err) {
+            console.log(err);
+        }
+        for (let i in rows) {      // pushes each zookeeper row from MySQL into an array for us to manipulate
+            enclosures.push(rows[i]);
+        }
+        res.render("enclosures", {enclosures: enclosures});
+    });
+});
 
+/* ADD ROUTE - Animal Enclosures */
+app.post("/enclosures", function(req, res) {
+   var sql = "INSERT INTO Animal_Enclosures (location, size_sqft, species, total_number, diet_type) VALUES (?, ?, ?, ?, ?)";
+   var inserts = [req.body.location, req.body.size_sqft, req.body.species, req.body.total_number, req.body.diet_type];
+   
+   pool.query(sql, inserts, function(err, results, fields) {
+       if(err) {
+           console.log(err);
+       } else {
+           res.redirect("/enclosures");
+       }
+   });
+});
+
+/* DELETE ROUTE  - Animal Enclosures */
+app.delete('/enclosures/delete/:id', function(req, res) {
+    var sql = "DELETE FROM Animal_Enclosures WHERE enclosure_id =?";
+    var inserts = [req.params.id];
+
+    pool.query(sql, inserts, function(err, results, fields) {
+        if(err) {
+            console.log(err);
+            res.write(JSON.stringify(err));
+            res.status(400);
+            res.end();
+        } else {
+            res.redirect("/enclosures");
+        }
+    });
+});
+
+/* SHOW ROUTE - Edit Animal Enclosures Page */
+app.get('/enclosures/edit/:id', function(req, res) {
+    var sql = "SELECT * FROM Animal_Enclosures WHERE enclosure_id =?";
+    var inserts = [req.params.id];
+    pool.query(sql, inserts, function(err, enclosures) {
+        if (err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        } else {
+            res.render('editEnclosures', {enclosures: enclosures});
+        }
+    });
+});
+
+/* EDIT ROUTE - Edit Animal Enclosures Row in Database */
+app.put('/enclosures/edit/:id', function(req, res) {
+   var sql = "UPDATE Animal_Enclosures SET location=?, size_sqft=?, species=?, total_number=?, diet_type=? WHERE enclosure_id=?";
+   var inserts = [req.body.location, req.body.size_sqft, req.body.species, req.body.total_number, req.body.diet_type, req.params.id];
+   pool.query(sql, inserts, function(err, results, fields) {
+    if (err) {
+        console.log(JSON.stringify(error))
+        res.write(JSON.stringify(error));
+        res.end();
+    } else {
+        res.redirect("/enclosures");
+    }
+   });
+});
 
 /* Not working yet */
 /* NEW ROUTE - Push New Work Order to DB */

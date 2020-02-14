@@ -3,5 +3,57 @@
 <!-- View either all the details of an individual work order or view all work orders past and present -->
 <body>
     <h1>This is the Detailed Work Order Page</h1>
+    <!-- This will pull all open work orders into a table -->
+    <table class="workOrders">
+        <legend>Current Open Work Orders</legend>
+        <thead>
+            <th>work_order_id</th>
+            <th>zookeeper_id</th>
+            <th>enclosure_id</th>
+            <th>task_name</th>
+            <th>supply_id</th>
+            <th>available</th>
+            <th>available_time</th>
+            <th>overdue_time</th>
+            <th>overdue_status</th>
+            <th>accepted task</th>
+            <th>completed_task</th>
+        </thead>
+        <tbody>
+            <% workOrders.forEach(function(ticket) { %>
+                <tr>
+                    <td> <%= ticket.work_order_id %> </td>
+                    <td> <%= ticket.zookeeper_id %> </td>
+                    <td> <%= ticket.enclosure_id %> </td>
+                    <td> <%= ticket.task_name %> </td>
+                    <td> <%= ticket.supply_id %> </td>
+                    <% if (ticket.available === 1) { %>
+                        <td>YES</td>
+                    <% } else { %>
+                        <td>NO</td>
+                    <% } %>
+                    <td> <%= ticket.available_time %> </td>
+                    <td> <%= ticket.overdue_time %> </td>
+                    <% if (ticket.overdue_status === 1) { %>
+                        <td>YES</td>
+                    <% } else { %>
+                        <td>NO</td>
+                    <% } %>
+                    <% if (ticket.accepted_task === 1) { %>
+                        <td>YES</td>
+                    <% } else { %>
+                        <td>NO</td>
+                    <% } %>
+                    <% if (ticket.completed_task === 1) { %>
+                        <td>YES</td>
+                    <% } else { %>
+                        <td>NO</td>
+                    <% } %>
+                </tr>
+            <% }); %>
+            <tr>
+            </tr>
+        </tbody>
+    </table>
 
 <%- include("partials/footer") %>

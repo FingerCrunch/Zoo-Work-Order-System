@@ -1,0 +1,56 @@
+<%- include("partials/header") %>
+<body>
+    <h1>Animal Enclosures</h1>
+    <table>
+        <thead>
+            <th>Enclosure ID</th>
+            <th>Location</th>
+            <th>Size (sqft) </th>
+            <th>Species</th>
+            <th>Total Animals</th>
+            <th>Diet Type</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+            <% enclosures.forEach(function(animal) { %>
+                <tr>
+                    <td> <%= animal.enclosure_id %> </td>
+                    <td> <%= animal.location %> </td>
+                    <td> <%= animal.size_sqft %> </td>
+                    <td> <%= animal.species %> </td>
+                    <td> <%= animal.total_number %> </td>
+                    <td> <%= animal.diet_type %> </td>
+                    <td><form action="/enclosures/edit/<%=animal.enclosure_id%>" method="GET">
+                        <button type="submit">EDIT</button>
+                        </form>
+                    </td>
+                    <td><form action="/enclosures/delete/<%=animal.enclosure_id%>?_method=DELETE" method="POST">
+                        <button type="submit">DELETE</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <form id="addEnclosure" action="/enclosures" method="POST">
+        <fieldset>
+            <legend>Add New Animal Enclosure</legend>
+            <input type="text" name="location" placeholder="Location" required> <br>
+            <input type="number" min="0" name="size_sqft" placeholder="Size (sqft)" required> <br>
+            <input type="text" name="species" placeholder="Species" required> <br>
+            <input type="number" min="0" name="total_number" placeholder="Total Number of Animals" required> <br>
+            <select name="diet_type" id="diet_type" required> 
+                <option value="Fruit">Fruit</option>
+                <option value="Meat">Meat</option>
+                <option value="Fish">Fish</option>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Hay">Hay</option>
+            </select> <br>
+            <button>Submit</button>
+        </fieldset>
+    </form>
+</body>
+
+
+<%- include("partials/footer") %> 
