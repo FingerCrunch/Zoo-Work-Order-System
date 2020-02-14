@@ -10,6 +10,10 @@ app.use(express.static(__dirname + "/public"));
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
+/*********************************************************
+ *                      HOME PAGE
+*********************************************************/
+
 /* INDEX ROUTE - Home Page */
 app.get("/", function(req,res) {
     let zookeepers = [], supplies = [], enclosures = [], workOrders = [];       // used to hold rows of information from MySQL
@@ -51,11 +55,9 @@ app.get("/", function(req,res) {
     });
 });
 
-/* Not implemented yet - working on POST request to add new Work Orders to DB */
-/* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
-app.get("/workorders", function(req, res) {
-    res.render("workOrder");
-});
+/*********************************************************
+ *                      ZOO_KEEPERS
+*********************************************************/
 
 /* SHOW ROUTE - Show All Zoo Keepers */
 app.get("/zookeepers", function(req, res) {
@@ -130,6 +132,58 @@ app.put("/zookeepers/edit/:id", function(req, res){
     });
 });
 
+/*********************************************************
+ *                      WORK_ORDERS
+*********************************************************/
+
+/* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
+app.get("/workorders", function(req, res) {
+    var sql = "SELECT * FROM Work_Orders";
+    pool.query(sql, function(err, workOrders) {
+        if (err) {
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        } else {
+            res.render("workOrder", {workOrders: workOrders});
+        }
+    });
+});
+
+/* NEW ROUTE - Push New Work Order to DB */
+app.post("/workorders", function(req,res) {
+    let zookeeper = req.body.zookeeper,
+        enclosure = req.body.enclosure,
+        task      = req.body.task,
+        supply    = req.body.supplies,
+        available = true,
+        overdue   = false,
+        accepted = true;
+    
+    let workOrder = [];
+    pool.query('INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, overdue_status, accepted) VALUES (zookeeper, enclosure, task, supply, available, overdue, accepted)', function(err, rows, field) {
+     
+    });
+});
+
+/* DELETE ROUTE - Delete Work Order */
+app.delete("/workorders/delete/:id", function(req, res) {
+
+});
+
+/* SHOW ROUTE - Show Edit Work Orders Page */
+app.get("/workorders/edit/:id", function(req, res) {
+
+});
+
+/* EDIT ROUTE - Edit Work Order */
+app.put("/workorders/edit/:id", function(req, res) {
+
+});
+
+/*********************************************************
+ *                      SUPPLIES
+*********************************************************/
 /* SHOW ROUTE - Show All Supplies */
 app.get("/supplies", function(req, res) {
     pool.query('SELECT * FROM Supplies', function(err, supplies) {
@@ -202,6 +256,10 @@ app.put("/supplies/edit/:id", function(req, res){
         }
     });
 });
+
+/*********************************************************
+ *                      ENCLOSURES
+*********************************************************/
 
 /* SHOW ROUTE - Animal Enclosures */
 app.get("/enclosures", function(req,res) {
@@ -279,25 +337,9 @@ app.put('/enclosures/edit/:id', function(req, res) {
    });
 });
 
-/* Not working yet */
-/* NEW ROUTE - Push New Work Order to DB */
-app.post("/workorders", function(req,res) {
-    let zookeeper = req.body.zookeeper,
-        enclosure = req.body.enclosure,
-        task      = req.body.task,
-        supply    = req.body.supplies,
-        available = true,
-        overdue   = false,
-        accepted = true;
-    
-    let workOrder = [];
-    pool.query('INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, supply_id, available, overdue_status, accepted) VALUES (zookeeper, enclosure, task, supply, available, overdue, accepted)', function(err, rows, field) {
-     
-    });
-});
-
-
-/* Code to start server and view HTML in web browser */
+/*********************************************************
+ * Code to start server and view HTML in web browser
+*********************************************************/
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log("The Server Has Started!");
