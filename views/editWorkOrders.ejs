@@ -1,0 +1,40 @@
+<%- include("partials/header") %>
+
+<!-- Not sure this page is going to be needed, might change to an edit page -->
+<body>
+    <div>
+        <% workOrders.forEach(function(ticket) { %>
+            <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
+            <form id="addWorkOrder" action="/workorders" method="POST">
+                <fieldset>
+                    <legend>Submit New Work Order</legend>
+                    Available: <input type="text" name="available_time" value="<%= ticket.available_time %>"> <br>
+                    Overdue: <input type="text" name="overdue_time"> <br>
+                    Task: <input type="text" name="task_name" value="<%= ticket.task_name %> " required> <br>
+                    <!--Store enclosure ID but show supply name to user submitting work order -->
+                    Supplies: <select name="supply_id" required>
+                        <option value="NULL">None</option>
+                        <!-- Creates a new option for each supply in the Supplies Table -->
+                        <% supplies.forEach(function(supply) { %>
+                            <option value="<%= supply.supply_id %>"><%= supply.supply_name %></option>
+                        <%}); %>    
+                    </select><br>
+                    <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
+                    Location: <select name="enclosure_id" required>
+                        <% enclosures.forEach(function(enclosure) { %>
+                            <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
+                        <%}); %>   
+                    </select><br>
+                    <!-- Creates a new option for each Zoo Keeper who's OnShift Status is 1 -->
+                    Assign to: <select name="zookeeper_id" required>
+                        <% zookeepers.forEach(function(zookeeper) { %>
+                            <option value="<%= zookeeper.zookeeper_id %>"><%= zookeeper.first_name + " " + zookeeper.last_name %></option>
+                        <%}); %>    
+                    </select><br>
+                    <input type="submit" value:"Edit Work Order">
+                </fieldset> 
+            </form>
+        <% }); %>
+    </div>
+
+<%- include("partials/footer") %>

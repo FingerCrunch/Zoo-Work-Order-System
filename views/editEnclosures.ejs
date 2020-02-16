@@ -1,0 +1,18 @@
+<%- include("partials/header") %>
+<div>
+    <% enclosures.forEach(function(animal) { %>
+        <form action="/enclosures/edit/<%=animal.enclosure_id %>?_method=PUT" method="POST">
+            <legend> Edit Animal Enclosures </legend>
+            <fieldset>
+                Location: <input type="text" name="location" value="<%=animal.location %>"> <br>
+                Size (sqft): <input type="text" name="size_sqft" value="<%= animal.size_sqft %> "> <br>
+                Species: <input type="text" name="species" value="<%= animal.species %> "> <br>
+                Total Animals: <input type="text" name="total_number" value="<%= animal.total_number %> "> <br>
+                Diet Type: <input type="text" name="diet_type" value="<%= animal.diet_type %> "> <br>
+                </select>
+                <button>Submit Changes</button>
+            </fieldset>
+        </form>
+    <% }); %>
+</div>
+<%- include("partials/footer") %>
