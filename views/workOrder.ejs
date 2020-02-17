@@ -13,7 +13,7 @@
             <th>Location</th>
             <th>Species</th>
             <th>Task</th>
-            <th>Supply Needed</th>
+            <th>Supply ID</th>
             <th>Available</th>
             <th>Available Date</th>
             <th>Overdue Date</th>
@@ -32,7 +32,7 @@
                     <td> <%= ticket.location %> </td>
                     <td> <%= ticket.species %> </td>
                     <td> <%= ticket.task_name %> </td>
-                    <td> <%= ticket.supply_name %> </td>
+                    <td> <%= ticket.supply_id %> </td>
                     <% if (ticket.available === 1) { %>
                         <td>YES</td>
                     <% } else { %>
