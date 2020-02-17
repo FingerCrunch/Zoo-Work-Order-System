@@ -5,14 +5,14 @@
     <div>
         <% workOrders.forEach(function(ticket) { %>
             <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
-            <form id="addWorkOrder" action="/workorders" method="POST">
+            <form id="addWorkOrder" action="/workorders/edit/<%=ticket.work_order_id%>?_method=PUT" method="post">
                 <fieldset>
                     <legend>Submit New Work Order</legend>
-                    Available: <input type="text" name="available_time" value="<%= ticket.available_time %>"> <br>
-                    Overdue: <input type="text" name="overdue_time"> <br>
+                    Available: <input type="date" placeholder="available_time" name="available_time" value="<%=ticket.available_time%>"> <br>
+                    Overdue: <input type="date" name="overdue_time" value="<%=ticket.overdue_time%>"> <br>
                     Task: <input type="text" name="task_name" value="<%= ticket.task_name %> " required> <br>
                     <!--Store enclosure ID but show supply name to user submitting work order -->
-                    Supplies: <select name="supply_id" required>
+                    Supplies: <select name="supply_id" data-placeholder="Choose your Supplies" multiple tabindex= "3" required>
                         <option value="NULL">None</option>
                         <!-- Creates a new option for each supply in the Supplies Table -->
                         <% supplies.forEach(function(supply) { %>
@@ -20,7 +20,7 @@
                         <%}); %>    
                     </select><br>
                     <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
-                    Location: <select name="enclosure_id" required>
+                    Location: <select name="enclosure_id" value="<%=ticket.enclosure_id%>"required>
                         <% enclosures.forEach(function(enclosure) { %>
                             <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
                         <%}); %>   
