@@ -7,18 +7,17 @@
     <table class="workOrders">
         <legend>Work Order History</legend>
         <thead>
-            <th>ID</th>
-            <th>Zookeeper First Name </th>
-            <th>Zookeeper Last Name </th>
+            <th>Order Number</th>
+            <th>Zookeeper</th>
             <th>Location</th>
             <th>Species</th>
             <th>Task</th>
-            <th>Supply ID</th>
-            <th>Available</th>
+            <th>Supply Name</th>
             <th>Available Date</th>
             <th>Overdue Date</th>
-            <th>Overdue Status</th>
+            <th>Available</th>
             <th>Accepted</th>
+            <th>Overdue</th>
             <th>Complete</th>
             <th>Edit</th>
             <th>Delete</th>
@@ -27,25 +26,24 @@
             <% workOrders.forEach(function(ticket) { %>
                 <tr>
                     <td> <%= ticket.work_order_id %> </td>
-                    <td> <%= ticket.first_name %> </td>
-                    <td> <%= ticket.last_name %> </td>
+                    <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
                     <td> <%= ticket.location %> </td>
                     <td> <%= ticket.species %> </td>
                     <td> <%= ticket.task_name %> </td>
-                    <td> <%= ticket.supply_id %> </td>
+                    <td> <%= ticket.supply_name %> </td>
+                    <td> <%= ticket.available_time %> </td>
+                    <td> <%= ticket.overdue_time %> </td>
                     <% if (ticket.available === 1) { %>
                         <td>YES</td>
                     <% } else { %>
                         <td>NO</td>
                     <% } %>
-                    <td> <%= ticket.available_time %> </td>
-                    <td> <%= ticket.overdue_time %> </td>
-                    <% if (ticket.overdue_status === 1) { %>
+                    <% if (ticket.accepted_task === 1) { %>
                         <td>YES</td>
                     <% } else { %>
                         <td>NO</td>
                     <% } %>
-                    <% if (ticket.accepted_task === 1) { %>
+                    <% if (ticket.overdue_status === 1) { %>
                         <td>YES</td>
                     <% } else { %>
                         <td>NO</td>
