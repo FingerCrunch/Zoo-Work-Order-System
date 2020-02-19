@@ -20,39 +20,39 @@
         <table class="workOrders">
             <legend>Current Open Work Orders</legend>
             <thead>
-                <th>work_order_id</th>
-                <th>zookeeper_id</th>
-                <th>enclosure_id</th>
-                <th>task_name</th>
-                <th>supply_id</th>
-                <th>available</th>
-                <th>available_time</th>
-                <th>overdue_time</th>
-                <th>overdue_status</th>
-                <th>accepted task</th>
-                <th>completed_task</th>
+                <th>Order Number</th>
+                <th>Zookeeper</th>
+                <th>Location</th>
+                <th>Task</th>
+                <th>Supply Name</th>
+                <th>Available Date</th>
+                <th>Due by</th>
+                <th>Available</th>
+                <th>Accepted</th>
+                <th>Overdue</th>
+                <th>Complete</th>
             </thead>
             <tbody>
                 <% workOrders.forEach(function(ticket) { %>
                     <tr>
                         <td> <%= ticket.work_order_id %> </td>
-                        <td> <%= ticket.zookeeper_id %> </td>
-                        <td> <%= ticket.enclosure_id %> </td>
+                        <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
+                        <td> <%= ticket.location %> </td>
                         <td> <%= ticket.task_name %> </td>
-                        <td> <%= ticket.supply_id %> </td>
+                        <td> <%= ticket.supply_name %> </td>
+                        <td> <%= ticket.available_time %> </td>
+                        <td> <%= ticket.overdue_time %> </td>
                         <% if (ticket.available === 1) { %>
                             <td>YES</td>
                         <% } else { %>
                             <td>NO</td>
                         <% } %>
-                        <td> <%= ticket.available_time %> </td>
-                        <td> <%= ticket.overdue_time %> </td>
-                        <% if (ticket.overdue_status === 1) { %>
+                        <% if (ticket.accepted_task === 1) { %>
                             <td>YES</td>
                         <% } else { %>
                             <td>NO</td>
                         <% } %>
-                        <% if (ticket.accepted_task === 1) { %>
+                        <% if (ticket.overdue_status === 1) { %>
                             <td>YES</td>
                         <% } else { %>
                             <td>NO</td>
@@ -88,6 +88,7 @@
                 </select><br>
                 <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
                 Location: <select name="enclosure_id" required>
+                    <option value="NULL">None</option>
                     <% enclosures.forEach(function(enclosure) { %>
                         <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
                     <%}); %>   

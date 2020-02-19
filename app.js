@@ -20,7 +20,7 @@ app.get("/", function(req,res) {
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
-        sql4 = 'SELECT * FROM Work_Orders';
+        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(JSON.stringify(err1))
@@ -131,6 +131,7 @@ app.get("/zookeepers/edit/:id", function(req, res) {
         }
     });
 });
+
 /* EDIT ROUTE - Edit Zookeeper Row in Database */
 app.put("/zookeepers/edit/:id", function(req, res){
     var sql = "UPDATE Zoo_Keepers SET first_name=?, last_name=?, phone_number=?, supervisor=?, onshift_status=? WHERE zookeeper_id=?";
@@ -152,7 +153,7 @@ app.put("/zookeepers/edit/:id", function(req, res){
 
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
-    var sql = "SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, ae.species, wo.task_name, os.supply_id, wo.available, wo.available_time, wo.overdue_time, wo.overdue_status, wo.accepted_task, wo.completed_task FROM Work_Orders AS wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae ON wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON os.supply_id = s.supply_id";
+    var sql = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     console.log(sql);
     pool.query(sql, function(err, workOrders) {
         if (err) {
@@ -167,20 +168,28 @@ app.get("/workorders", function(req, res) {
 });
 
 /* NEW ROUTE - Push New Work Order to DB */
+//Reference: https://www.howtobuildsoftware.com/index.php/how-do/byl2/javascript-json-nodejs-mongodb-express-foreach-error-if-only-one-object-in-array-on-post
 app.post("/workorders", function(req,res) {
     var sql1 = "INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, available, available_time, overdue_time, overdue_status, accepted_task, completed_task) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var inserts1 = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];
+ 
     pool.query(sql1, inserts1, function(err, rows, field) {
         if(err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
             res.end();
             }
-        req.body.supply_id.forEach(element => {
-            sql2 = sql2 + "(" + rows.insertId + "," + element + ")" + ",";
-        });
-        sql2 = sql2.substring(0, sql2.length - 1);
+        if(req.body.supply_id !== undefined){
+            if(Array.isArray(req.body.supply_id)){
+                req.body.supply_id.forEach(function(item){
+                    sql2 = sql2 + "(" + rows.insertId + "," + item + ")" + ",";
+                });
+                sql2 = sql2.substring(0, sql2.length - 1);
+                }else{
+                    sql2 = sql2 + "(" + rows.insertId + "," + req.body.supply_id + ")";
+                    } 
+            }
         pool.query(sql2, function(err2, rows2, field2) {
             if(err2) {
                 console.log(JSON.stringify(err2))
@@ -247,40 +256,20 @@ app.get("/workorders/edit/:id", function(req, res) {
 });
 
 
-// /* EDIT ROUTE - Edit Supply Row in Database */
-// app.put("/workorders/edit/:id", function(req, res){
-//     var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=?, available=?, available_time=?, overdue_time=?, overdue_status=?, accepted_task=?, completed_task=? WHERE work_order_id=?";
-//     var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.body.available, req.body.available_time, req.body.overdue_time, req.body.overdue_status, req.body.accepted_task, req.body.completed_task, req.params.id];
-//     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
-//     var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?";
-//     pool.query(sql, inserts, function(err, results, fields){
-//         if(err){
-//             console.log(JSON.stringify(err))
-//             res.write(JSON.stringify(err));
-//             res.end();
-//         }
-//         pool.query(sql3, req.params.id, function(err, results, fields){
-//             if(err){
-//                 console.log(JSON.stringify(err))
-//                 res.write(JSON.stringify(err));
-//                 res.end();
-//             }
-        
-//             req.body.supply_id.forEach(element => {
-//                 sql2 = sql2 + "(" + req.params.id + "," + element + ")" + ",";
-//             });
-//             sql2 = sql2.substring(0, sql2.length - 1);
-//             pool.query(sql2, function(err2, rows2, field2) {
-//                 if(err2) {
-//                     console.log(JSON.stringify(err2))
-//                     res.write(JSON.stringify(err2));
-//                     res.end();
-//                 }
-//                 res.redirect('/workorders');
-//             });
-//         });
-//     });
-// });
+/* EDIT ROUTE - Edit Supply Row in Database */
+app.put("/workorders/edit/:id", function(req, res){
+    var sql = "UPDATE Work_Orders SET zoo_keeper_id=?, enclosure_id=?, supply_id=?, task_name=?, available=?, available_time=?, overdue_time=?, overdue_status=?, accepted_task=?, completed_task=? WHERE work_order_id=?",
+        inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.supply_id, req.body.task_name, req.body.available, req.body.available_time, req.body.overdue_time, req.body.overdue_status, req.body.accepted_task, req.body.completed_task];
+    pool.query(sql, inserts, function(err, results, fields) {
+        if(err){
+            console.log(JSON.stringify(err))
+            res.write(JSON.stringify(err));
+            res.end();
+        }else{
+            res.redirect('/workorders');
+        }
+    });
+});
 
 /*********************************************************
  *                      SUPPLIES
