@@ -168,20 +168,28 @@ app.get("/workorders", function(req, res) {
 });
 
 /* NEW ROUTE - Push New Work Order to DB */
+//Reference: https://www.howtobuildsoftware.com/index.php/how-do/byl2/javascript-json-nodejs-mongodb-express-foreach-error-if-only-one-object-in-array-on-post
 app.post("/workorders", function(req,res) {
     var sql1 = "INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, available, available_time, overdue_time, overdue_status, accepted_task, completed_task) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var inserts1 = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];
+ 
     pool.query(sql1, inserts1, function(err, rows, field) {
         if(err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
             res.end();
             }
-        req.body.supply_id.forEach(element => {
-            sql2 = sql2 + "(" + rows.insertId + "," + element + ")" + ",";
-        });
-        sql2 = sql2.substring(0, sql2.length - 1);
+        if(req.body.supply_id !== undefined){
+            if(Array.isArray(req.body.supply_id)){
+                req.body.supply_id.forEach(function(item){
+                    sql2 = sql2 + "(" + rows.insertId + "," + item + ")" + ",";
+                });
+                sql2 = sql2.substring(0, sql2.length - 1);
+                }else{
+                    sql2 = sql2 + "(" + rows.insertId + "," + req.body.supply_id + ")";
+                    } 
+            }
         pool.query(sql2, function(err2, rows2, field2) {
             if(err2) {
                 console.log(JSON.stringify(err2))
