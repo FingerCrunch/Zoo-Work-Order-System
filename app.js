@@ -297,18 +297,6 @@ app.put("/workorders/edit/:id", function(req, res){
     res.redirect("/workorders");
 });
 
-// INSERT INTO mytable (id, a, b, c)
-// VALUES (1, 'a1', 'b1', 'c1'),
-// (2, 'a2', 'b2', 'c2'),
-// (3, 'a3', 'b3', 'c3'),
-// (4, 'a4', 'b4', 'c4'),
-// (5, 'a5', 'b5', 'c5'),
-// (6, 'a6', 'b6', 'c6')
-// ON DUPLICATE KEY UPDATE id=VALUES(id),
-// a=VALUES(a),
-// b=VALUES(b),
-// c=VALUES(c);
-
 /*********************************************************
  *                      SUPPLIES
 *********************************************************/
