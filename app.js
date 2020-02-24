@@ -258,18 +258,56 @@ app.get("/workorders/edit/:id", function(req, res) {
 
 /* EDIT ROUTE - Edit Supply Row in Database */
 app.put("/workorders/edit/:id", function(req, res){
-    var sql = "UPDATE Work_Orders SET zoo_keeper_id=?, enclosure_id=?, supply_id=?, task_name=?, available=?, available_time=?, overdue_time=?, overdue_status=?, accepted_task=?, completed_task=? WHERE work_order_id=?",
-        inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.supply_id, req.body.task_name, req.body.available, req.body.available_time, req.body.overdue_time, req.body.overdue_status, req.body.accepted_task, req.body.completed_task];
+    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=? WHERE work_order_id=?;";
+    var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
+    var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
+    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];
+    var inserts2 = [req.params.id];
     pool.query(sql, inserts, function(err, results, fields) {
         if(err){
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
             res.end();
-        }else{
-            res.redirect('/workorders');
         }
-    });
+        if(req.body.supply_id !== undefined){
+            if(Array.isArray(req.body.supply_id)){
+                req.body.supply_id.forEach(function(item){
+                    sql2 = sql2 + "(" + req.params.id + "," + item + ")" + ",";
+                });
+                sql2 = sql2.substring(0, sql2.length - 1);
+                }else{
+                    sql2 = sql2 + "(" + req.params.id + "," + req.body.supply_id + ")";
+                }
+                pool.query(sql3, inserts2, function(err, results, fields){
+                    if(err){
+                        console.log(JSON.stringify(err))
+                        res.write(JSON.stringify(err));
+                        res.end();
+                    }
+                    pool.query(sql2, function(err2, rows2, field2) {
+                        if(err2) {
+                            console.log(JSON.stringify(err2))
+                            res.write(JSON.stringify(err2));
+                            res.end();
+                        }
+            });
+        });
+        
+    }});
+    res.redirect("/workorders");
 });
+
+// INSERT INTO mytable (id, a, b, c)
+// VALUES (1, 'a1', 'b1', 'c1'),
+// (2, 'a2', 'b2', 'c2'),
+// (3, 'a3', 'b3', 'c3'),
+// (4, 'a4', 'b4', 'c4'),
+// (5, 'a5', 'b5', 'c5'),
+// (6, 'a6', 'b6', 'c6')
+// ON DUPLICATE KEY UPDATE id=VALUES(id),
+// a=VALUES(a),
+// b=VALUES(b),
+// c=VALUES(c);
 
 /*********************************************************
  *                      SUPPLIES
