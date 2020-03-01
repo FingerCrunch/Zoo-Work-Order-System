@@ -80,7 +80,6 @@
                 Task: <input type="text" name="task_name" placeholder="Description" required> <br>
                 <!--Store enclosure ID but show supply name to user submitting work order -->
                 Supplies: <select name="supply_id" data-placeholder="Choose your Supplies" multiple tabindex= "3" required>
-                    <option value="NULL">None</option>
                     <!-- Creates a new option for each supply in the Supplies Table -->
                     <% supplies.forEach(function(supply) { %>
                         <option value="<%= supply.supply_id %>"><%= supply.supply_name %></option>
