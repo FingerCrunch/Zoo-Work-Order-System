@@ -23,6 +23,7 @@
                     <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
                     Location: <br>
                     <select name="enclosure_id" value="<%=ticket.enclosure_id%>"required>
+                        <option value='NULL'>None</option>
                         <% enclosures.forEach(function(enclosure) { %>
                             <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
                         <%}); %>   
