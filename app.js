@@ -171,7 +171,10 @@ app.get("/workorders", function(req, res) {
 app.post("/workorders", function(req,res) {
     var sql1 = "INSERT INTO Work_Orders (zookeeper_id, enclosure_id, task_name, available, available_time, overdue_time, overdue_status, accepted_task, completed_task) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
-    var inserts1 = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];
+    if(req.body.enclosure_id === 'NULL'){
+        var inserts1 = [req.body.zookeeper_id,, req.body.task_name, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];
+    }else{
+    var inserts1 = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, 1, req.body.available_time, req.body.overdue_time, 0, 1, 0];}
  
     pool.query(sql1, inserts1, function(err, rows, field) {
         if(err) {
