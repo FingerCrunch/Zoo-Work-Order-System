@@ -20,7 +20,7 @@ app.get("/", function(req,res) {
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
-        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(JSON.stringify(err1))
@@ -154,7 +154,6 @@ app.put("/zookeepers/edit/:id", function(req, res){
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
     var sql = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
-    console.log(sql);
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
