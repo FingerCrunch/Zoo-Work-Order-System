@@ -37,7 +37,11 @@
                     <tr>
                         <td> <%= ticket.work_order_id %> </td>
                         <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
-                        <td> <%= ticket.location %> </td>
+                        <% if (ticket.enclosure_id === null) { %>
+                            <td>None</td>
+                        <% } else { %>
+                            <td><%= ticket.location %></td>
+                        <% } %>
                         <td> <%= ticket.task_name %> </td>
                         <td> <%= ticket.supply_name %> </td>
                         <td> <%= ticket.available_time %> </td>
