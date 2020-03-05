@@ -20,7 +20,7 @@ app.get("/", function(req,res) {
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
-        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(JSON.stringify(err1))
@@ -153,7 +153,7 @@ app.put("/zookeepers/edit/:id", function(req, res){
 
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
-    var sql = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id INNER JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+    var sql = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
@@ -263,7 +263,10 @@ app.put("/workorders/edit/:id", function(req, res){
     var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=? WHERE work_order_id=?;";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
-    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];
+    if(req.body.enclosure_id === 'NULL'){
+        var inserts = [req.body.zookeeper_id,, req.body.task_name, req.params.id];
+    }else{
+    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];}
     var inserts2 = [req.params.id];
     pool.query(sql, inserts, function(err, results, fields) {
         if(err){
