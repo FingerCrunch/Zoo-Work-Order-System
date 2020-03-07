@@ -4,9 +4,15 @@
     <% supplies.forEach(function(item){ %>   
         <form action="/supplies/edit/<%=item.supply_id%>?_method=PUT" method="post">
             Supply Name: <input type="text" name="supply_name" value="<%=item.supply_name%>"><br>
-            In Stock?: <input type="radio" name="in_stock" value="1">In Stock
-            <input type="radio" name="in_stock" value="0">Out of Stock<br>
+            In Stock?: 
+            <select name="in_stock" id="stock">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
             <input type="submit" value="Edit Supplies">
+            <script>
+                document.getElementById('stock').value = <%= item.in_stock %>;
+            </script>
         </form><br>
     <%})%>
 </div>

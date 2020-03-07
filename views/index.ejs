@@ -37,7 +37,11 @@
                     <tr>
                         <td> <%= ticket.work_order_id %> </td>
                         <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
-                        <td> <%= ticket.location %> </td>
+                        <% if (ticket.enclosure_id === null) { %>
+                            <td>None</td>
+                        <% } else { %>
+                            <td><%= ticket.location %></td>
+                        <% } %>
                         <td> <%= ticket.task_name %> </td>
                         <td> <%= ticket.supply_name %> </td>
                         <td> <%= ticket.available_time %> </td>
@@ -87,7 +91,7 @@
                 </select><br>
                 <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
                 Location: <select name="enclosure_id" required>
-                    <option value="NULL">None</option>
+                    <option value='NULL'>None</option>
                     <% enclosures.forEach(function(enclosure) { %>
                         <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
                     <%}); %>   

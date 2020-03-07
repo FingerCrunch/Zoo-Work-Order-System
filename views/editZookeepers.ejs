@@ -7,8 +7,14 @@
             Last Name: <input type="text" name="lname" value="<%=employee.last_name%>"><br>
             Phone Number: <input type="number" name="phoneNumber" value="<%=employee.phone_number%>"><br>
             Supervisor: <input type="text" name="supervisor" value="<%=employee.supervisor%>"><br>
-            On-Shift Status: <input type="number" name="onshift_status" value="<%= employee.onshift_status %>" min="0" max="1">
-            </select><br>
+            On-Shift Status:
+            <select name="onshift_status" id="shift"> On-Shift Status
+                <option value="0">Off Work</option>
+                <option value="1">Working</option>
+            </select> <br>
+            <script>
+                document.getElementById('shift').value = <%= employee.onshift_status %>;
+            </script>
             <input type="submit" value="Submit Changes">
         </form><br>
     <%})%>
