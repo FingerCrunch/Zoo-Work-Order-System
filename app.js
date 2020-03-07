@@ -224,8 +224,7 @@ app.get("/workorders/edit/:id", function(req, res) {
     var sql = "SELECT * FROM Work_Orders WHERE work_order_id = ?",
         sql2 = "SELECT * FROM Supplies",
         sql3 = "SELECT * FROM Animal_Enclosures",
-        sql4 = "SELECT * FROM Zoo_Keepers",
-        sql5 = "SELECT * FROM Order_Supplies"; 
+        sql4 = "SELECT * FROM Zoo_Keepers"; 
     var inserts = [req.params.id];
     pool.query(sql, inserts, function(err, workOrders) {
         if(err) {
@@ -251,14 +250,7 @@ app.get("/workorders/edit/:id", function(req, res) {
                         res.write(JSON.stringify(err4));
                         res.end();
                     }
-                    pool.query(sql5, function(err5, orderSupplies, field5) {
-                        if(err5) {
-                            console.log(JSON.stringify(err5));
-                            res.write(JSON.stringify(err5));
-                            res.end();
-                        }
-                    })
-                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies, orderSupplies: orderSupplies});
+                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies});
                 });
             });
         });
