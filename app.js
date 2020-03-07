@@ -224,7 +224,8 @@ app.get("/workorders/edit/:id", function(req, res) {
     var sql = "SELECT * FROM Work_Orders WHERE work_order_id = ?",
         sql2 = "SELECT * FROM Supplies",
         sql3 = "SELECT * FROM Animal_Enclosures",
-        sql4 = "SELECT * FROM Zoo_Keepers"; 
+        sql4 = "SELECT * FROM Zoo_Keepers",
+        sql5 = "SELECT * FROM Order_Supplies"; 
     var inserts = [req.params.id];
     pool.query(sql, inserts, function(err, workOrders) {
         if(err) {
@@ -240,17 +241,24 @@ app.get("/workorders/edit/:id", function(req, res) {
             }
             pool.query(sql3, function(err3, enclosures, field3) {
                 if (err3) {
-                    console.log(JSON.stringify(err2))
-                    res.write(JSON.stringify(err2));
+                    console.log(JSON.stringify(err3))
+                    res.write(JSON.stringify(err3));
                     res.end();
                 }
                 pool.query(sql4, function(err4, zookeepers, field4) {
                     if (err4) {
-                        console.log(JSON.stringify(err2))
-                        res.write(JSON.stringify(err2));
+                        console.log(JSON.stringify(err4))
+                        res.write(JSON.stringify(err4));
                         res.end();
                     }
-                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies});
+                    pool.query(sql5, function(err5, orderSupplies, field5) {
+                        if(err5) {
+                            console.log(JSON.stringify(err5));
+                            res.write(JSON.stringify(err5));
+                            res.end();
+                        }
+                    })
+                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies, orderSupplies: orderSupplies});
                 });
             });
         });
