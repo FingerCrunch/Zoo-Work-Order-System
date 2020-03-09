@@ -18,3 +18,7 @@ input, select {
 div {
     padding: 10px;
 }
+
+.nav-item {
+    font-size: larger;
+}

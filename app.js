@@ -264,7 +264,7 @@ app.put("/workorders/edit/:id", function(req, res){
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
     if(req.body.enclosure_id === 'NULL'){
-        var inserts = [req.body.zookeeper_id,, req.body.task_name, req.params.id];
+        var inserts = [req.body.zookeeper_id, req.body.task_name, req.params.id];
     }else{
     var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];}
     var inserts2 = [req.params.id];
