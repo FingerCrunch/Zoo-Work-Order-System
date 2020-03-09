@@ -20,7 +20,7 @@ app.get("/", function(req,res) {
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
-        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+        sql4 = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id WHERE completed_task = 0';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(JSON.stringify(err1))
@@ -153,7 +153,7 @@ app.put("/zookeepers/edit/:id", function(req, res){
 
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
-    var sql = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+    var sql = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, ae.species, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
@@ -260,13 +260,13 @@ app.get("/workorders/edit/:id", function(req, res) {
 
 /* EDIT ROUTE - Edit Supply Row in Database */
 app.put("/workorders/edit/:id", function(req, res){
-    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=? WHERE work_order_id=?;";
+    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=?, overdue_status=?, completed_task=? WHERE work_order_id=?;";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
     if(req.body.enclosure_id === 'NULL'){
         var inserts = [req.body.zookeeper_id, req.body.task_name, req.params.id];
     }else{
-    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];}
+    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.body.overdue_status, req.body.completed_task, req.params.id];}
     var inserts2 = [req.params.id];
     pool.query(sql, inserts, function(err, results, fields) {
         if(err){
@@ -274,7 +274,7 @@ app.put("/workorders/edit/:id", function(req, res){
             res.write(JSON.stringify(err));
             res.end();
         }
-        if(req.body.supply_id !== undefined){
+        else if(req.body.supply_id !== undefined){
             if(Array.isArray(req.body.supply_id)){
                 req.body.supply_id.forEach(function(item){
                     sql2 = sql2 + "(" + req.params.id + "," + item + ")" + ",";
@@ -297,7 +297,6 @@ app.put("/workorders/edit/:id", function(req, res){
                         }
             });
         });
-        
     }});
     res.redirect("/workorders");
 });

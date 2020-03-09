@@ -30,15 +30,30 @@
                     </select>
                     <br>
                     <!-- Creates a new option for each Zoo Keeper who's OnShift Status is 1 -->
-                    Assign to: <br>
+                    Re-Assign to: <br>
                     <select id="zookeeper" name="zookeeper_id" required>
                         <% zookeepers.forEach(function(zookeeper) { %>
                             <option value="<%= zookeeper.zookeeper_id %>"><%= zookeeper.first_name + " " + zookeeper.last_name %></option>
                         <%}); %>
+                    </select> 
+                    <br>
+                    Set Overdue: <br>
+                    <select name="overdue_status" id="overdue">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
                     </select>
+                    <br>
+                    Mark Complete: <br>
+                    <select name="completed_task" id="complete">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <br>
                     <script>
                         document.getElementById('enclosure').value = <%= ticket.enclosure_id %>;
                         document.getElementById('zookeeper').value = <%= ticket.zookeeper_id %>;
+                        document.getElementById('overdue').value = <%= ticket.overdue_status %>;
+                        document.getElementById('complete').value = <%= ticket.completed_task %>;
                     </script>
                     <br>
                     <input type="submit" value:"Edit Work Order">
