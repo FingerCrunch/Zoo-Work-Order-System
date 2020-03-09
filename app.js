@@ -260,13 +260,13 @@ app.get("/workorders/edit/:id", function(req, res) {
 
 /* EDIT ROUTE - Edit Supply Row in Database */
 app.put("/workorders/edit/:id", function(req, res){
-    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=? WHERE work_order_id=?;";
+    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=?, overdue_status=?, completed_task=? WHERE work_order_id=?;";
     var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
     var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
     if(req.body.enclosure_id === 'NULL'){
         var inserts = [req.body.zookeeper_id, req.body.task_name, req.params.id];
     }else{
-    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.params.id];}
+    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.body.overdue_status, req.body.completed_task, req.params.id];}
     var inserts2 = [req.params.id];
     pool.query(sql, inserts, function(err, results, fields) {
         if(err){
