@@ -5,9 +5,9 @@
             <legend> Edit Animal Enclosures </legend>
             <fieldset>
                 Location: <input type="text" name="location" value="<%=animal.location %>"> <br>
-                Size (sqft): <input type="text" name="size_sqft" value="<%= animal.size_sqft %> "> <br>
+                Size (sqft): <input type="number" name="size_sqft" value="<%= animal.size_sqft %>" min="0"> <br>
                 Species: <input type="text" name="species" value="<%= animal.species %> "> <br>
-                Total Animals: <input type="text" name="total_number" value="<%= animal.total_number %> "> <br>
+                Total Animals: <input type="number" name="total_number" value="<%= animal.total_number %>" min="0"> <br>
                 Diet Type: <input type="text" name="diet_type" value="<%= animal.diet_type %> "> <br>
                 </select>
                 <button>Submit Changes</button>
