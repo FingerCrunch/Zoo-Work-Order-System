@@ -5,15 +5,32 @@
         Ticketing System - Date: <script> document.write(new Date().toLocaleDateString()); </script> 
     </h1>
     <div>
-        <h2>Current Employees On Shift</h2> <!-- Will use the On-Shift = True to fill this ordered list -->
-        <ol>
-            <!-- Creates a new <li> for each Zoo Keeper who's OnShift Status Value is 1 -->
-            <% zookeepers.forEach(function(zookeeper) { %>
-                <li> <%= zookeeper.first_name + " " + zookeeper.last_name %> </li>
+        <h2>Zookeepers On Shift</h2>
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Supervisor</th>
+                <th>OnShift?</th>
+            </thead>
+            <% zookeepers.forEach(function(employee) { %>
+                <tr>
+                    <td> <%= employee.zookeeper_id %> </td>
+                    <td> <%= employee.first_name + " " + employee.last_name %> </td>
+                    <td> <%= employee.phone_number %> </td>
+                    <td> <%= employee.supervisor %> </td>
+                    <% if (employee.onshift_status === 1) { %>
+                        <td>YES</td>
+                    <% } else {%>
+                        <td>NO</td>
+                    <% } %>
+                </tr>
             <% }); %>
-        </ol>
+        </table>
         <!-- Pulls up all the information for all Zoo Keepers in the DB-->
         <button><a href="/zookeepers">View All Zoo Keepers</a></button>
+        <br>   
     </div>
     <div>
         <!-- This will pull all open work orders into a table -->
