@@ -20,7 +20,7 @@ app.get("/", function(req,res) {
     var sql = 'SELECT * FROM Zoo_Keepers WHERE onshift_status = 1',
         sql2 = 'SELECT * FROM Supplies',
         sql3 = 'SELECT * FROM Animal_Enclosures',
-        sql4 = 'SELECT * FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id WHERE completed_task = 0';
+        sql4 = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id WHERE completed_task = 0';
     pool.query(sql, function(err1, rows1, field1) {
         if(err1) {
             console.log(JSON.stringify(err1))
