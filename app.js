@@ -153,7 +153,7 @@ app.put("/zookeepers/edit/:id", function(req, res){
 
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
-    var sql = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+    var sql = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, ae.species, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
