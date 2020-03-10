@@ -7,7 +7,7 @@
             <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
             <form id="addWorkOrder" action="/workorders/edit/<%=ticket.work_order_id%>?_method=PUT" method="post">
                 <fieldset>
-                    <legend>Submit New Work Order</legend>
+                    <legend>Edit Work Order</legend>
                     Task: <br>
                     <input type="text" name="task_name" value="<%= ticket.task_name %>" required> 
                     <br>
