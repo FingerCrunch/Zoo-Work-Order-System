@@ -4,6 +4,15 @@
 <body>
     <meta http-equiv="refresh" content="5"></meta>
     <h1>This is the Detailed Work Order Page</h1>
+    <form action="filter_workOrders" action="/workorders" method="GET">
+        <label>Filter Location</label>
+        <select name="location" id="location">
+            <option>All Locations</option>
+            <% enclosures.forEach(function(location) { %>
+                <option value="<%= location.location %>"><%= location.location %></option>
+            <% }); %>
+        </select>
+    </form>
     <!-- This will pull all open work orders into a table -->
     <table class="workOrders">
         <legend>Work Order History</legend>
