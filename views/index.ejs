@@ -37,29 +37,38 @@
         <form id="addWorkOrder" action="/workorders" method="POST">
             <fieldset>
                 <legend>Submit New Work Order</legend>
-                Available: <input type="date" placeholder="available_time" name="available_time"> <br>
-                Overdue: <input type="date" name="overdue_time"> <br>
-                Task: <input type="text" name="task_name" placeholder="Description" required> <br>
+                Available: <br>
+                <input type="date" placeholder="available_time" name="available_time"> <br>
+                Overdue: <br>
+                <input type="date" name="overdue_time"> <br>
+                Task: <br>
+                <input type="text" name="task_name" placeholder="Description" required> <br>
                 <!--Store enclosure ID but show supply name to user submitting work order -->
-                Supplies: <select name="supply_id" data-placeholder="Choose your Supplies" multiple tabindex= "3" required>
+                Supplies: <br>
+                <select name="supply_id" data-placeholder="Choose your Supplies" multiple tabindex= "3" required>
                     <!-- Creates a new option for each supply in the Supplies Table -->
                     <% supplies.forEach(function(supply) { %>
                         <option value="<%= supply.supply_id %>"><%= supply.supply_name %></option>
                     <%}); %>    
-                </select><br>
+                </select>
+                <br>
                 <!-- Creates a new option for each enclosure in the Animal_Enclosures Table -->
-                Location: <select name="enclosure_id" required>
+                Location: <br>
+                <select name="enclosure_id" required>
                     <option value='NULL'>None</option>
                     <% enclosures.forEach(function(enclosure) { %>
                         <option value="<%= enclosure.enclosure_id %>"><%= enclosure.location %></option>
                     <%}); %>   
-                </select><br>
+                </select>
+                <br>
                 <!-- Creates a new option for each Zoo Keeper who's OnShift Status is 1 -->
-                Assign to: <select name="zookeeper_id" required>
+                Assign to: <br>
+                <select name="zookeeper_id" required>
                     <% zookeepers.forEach(function(zookeeper) { %>
                         <option value="<%= zookeeper.zookeeper_id %>"><%= zookeeper.first_name + " " + zookeeper.last_name %></option>
                     <%}); %>    
-                </select><br>
+                </select>
+                <br>
                 <input type="submit" value:"Add Work Order">
             </fieldset> 
         </form>
