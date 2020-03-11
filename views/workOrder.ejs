@@ -2,70 +2,71 @@
 
 <!-- View either all the details of an individual work order or view all work orders past and present -->
 <body>
-    <!-- <meta http-equiv="refresh" content="5"></meta> -->
+    <div>
+        <!-- This will pull all open work orders into a table -->
+        <table class="workOrders">
+            <legend>Work Order History</legend>
+            <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
+            <input type="text" class="form-control" id="myInput" placeholder="Search"> <br>
+            <thead>
+                <th>Order Number</th>
+                <th>Zookeeper</th>
+                <th>Location</th>
+                <th>Species</th>
+                <th>Task</th>
+                <th>Supply Name</th>
+                <th>Available Date</th>
+                <th>Overdue Date</th>
+                <th>Status</th>
+                <th>Accepted</th>
+                <th>Overdue</th>
+                <th>Complete</th>
+            </thead>
+            <tbody id="myTable">
+                <% workOrders.forEach(function(ticket) { %>
+                    <tr>
+                        <td> <%= ticket.work_order_id %> </td>
+                        <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
+                        <% if (ticket.enclosure_id === null) { %>
+                            <td>None</td>
+                        <% } else { %>
+                            <td><%= ticket.location %></td>
+                        <% } %>
+                        <% if (ticket.enclosure_id === null) { %>
+                            <td>None</td>
+                        <% } else { %>
+                            <td><%= ticket.species %></td>
+                        <% } %>
+                        <td> <%= ticket.task_name %> </td>
+                        <td> <%= ticket.supply_name %> </td>
+                        <td> <%= ticket.available_time %> </td>
+                        <td> <%= ticket.overdue_time %> </td>
+                        <% if (ticket.available === 1) { %>
+                            <td>Available</td>
+                        <% } else { %>
+                            <td>Not Available</td>
+                        <% } %>
+                        <% if (ticket.accepted_task === 1) { %>
+                            <td>Accepted</td>
+                        <% } else { %>
+                            <td>Not Accepted</td>
+                        <% } %>
+                        <% if (ticket.overdue_status === 1) { %>
+                            <td>Late</td>
+                        <% } else { %>
+                            <td>On Time</td>
+                        <% } %>
+                        <% if (ticket.completed_task === 1) { %>
+                            <td>Closed</td>
+                        <% } else { %>
+                            <td>Open</td>
+                        <% } %>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>    
     
-    <!-- This will pull all open work orders into a table -->
-    <table class="workOrders">
-        <legend>Work Order History</legend>
-        <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
-        <input type="text" class="form-control" id="myInput" placeholder="Search"> <br>
-        <thead>
-            <th>Order Number</th>
-            <th>Zookeeper</th>
-            <th>Location</th>
-            <th>Species</th>
-            <th>Task</th>
-            <th>Supply Name</th>
-            <th>Available Date</th>
-            <th>Overdue Date</th>
-            <th>Status</th>
-            <th>Accepted</th>
-            <th>Overdue</th>
-            <th>Complete</th>
-        </thead>
-        <tbody id="myTable">
-            <% workOrders.forEach(function(ticket) { %>
-                <tr>
-                    <td> <%= ticket.work_order_id %> </td>
-                    <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
-                    <% if (ticket.enclosure_id === null) { %>
-                        <td>None</td>
-                    <% } else { %>
-                        <td><%= ticket.location %></td>
-                    <% } %>
-                    <% if (ticket.enclosure_id === null) { %>
-                        <td>None</td>
-                    <% } else { %>
-                        <td><%= ticket.species %></td>
-                    <% } %>
-                    <td> <%= ticket.task_name %> </td>
-                    <td> <%= ticket.supply_name %> </td>
-                    <td> <%= ticket.available_time %> </td>
-                    <td> <%= ticket.overdue_time %> </td>
-                    <% if (ticket.available === 1) { %>
-                        <td>Available</td>
-                    <% } else { %>
-                        <td>Not Available</td>
-                    <% } %>
-                    <% if (ticket.accepted_task === 1) { %>
-                        <td>Accepted</td>
-                    <% } else { %>
-                        <td>Not Accepted</td>
-                    <% } %>
-                    <% if (ticket.overdue_status === 1) { %>
-                        <td>Late</td>
-                    <% } else { %>
-                        <td>On Time</td>
-                    <% } %>
-                    <% if (ticket.completed_task === 1) { %>
-                        <td>Closed</td>
-                    <% } else { %>
-                        <td>Open</td>
-                    <% } %>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
     <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
     <script>
         $(document).ready(function(){
@@ -77,7 +78,5 @@
           });
         });
     </script>
-    <br>
-    <button><a href="/">Return Home</a></button>
 
 <%- include("partials/footer") %>
