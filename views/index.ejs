@@ -33,73 +33,6 @@
         <br>   
     </div>
     <div>
-        <!-- This will pull all open work orders into a table -->
-        <table class="workOrders">
-            <legend>Current Open Work Orders</legend>
-            <thead>
-                <th>Order Number</th>
-                <th>Zookeeper</th>
-                <th>Location</th>
-                <th>Task</th>
-                <th>Supply Name</th>
-                <th>Available Date</th>
-                <th>Due by</th>
-                <th>Available</th>
-                <th>Accepted</th>
-                <th>Overdue</th>
-                <th>Complete</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </thead>
-            <tbody>
-                <% workOrders.forEach(function(ticket) { %>
-                    <tr>
-                        <td> <%= ticket.work_order_id %> </td>
-                        <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
-                        <% if (ticket.enclosure_id === null) { %>
-                            <td>None</td>
-                        <% } else { %>
-                            <td><%= ticket.location %></td>
-                        <% } %>
-                        <td> <%= ticket.task_name %> </td>
-                        <td> <%= ticket.supply_name %> </td>
-                        <td> <%= ticket.available_time %> </td>
-                        <td> <%= ticket.overdue_time %> </td>
-                        <% if (ticket.available === 1) { %>
-                            <td>YES</td>
-                        <% } else { %>
-                            <td>NO</td>
-                        <% } %>
-                        <% if (ticket.accepted_task === 1) { %>
-                            <td>YES</td>
-                        <% } else { %>
-                            <td>NO</td>
-                        <% } %>
-                        <% if (ticket.overdue_status === 1) { %>
-                            <td>YES</td>
-                        <% } else { %>
-                            <td>NO</td>
-                        <% } %>
-                        <% if (ticket.completed_task === 1) { %>
-                            <td>YES</td>
-                        <% } else { %>
-                            <td>NO</td>
-                        <% } %>
-                        <td><form action="/workorders/edit/<%=ticket.work_order_id%>" method="GET">
-                            <button type="submit">EDIT</button>
-                            </form>
-                        </td>
-                        <td><form action="/workorders/delete/<%=ticket.work_order_id%>?_method=DELETE" method="POST">
-                            <button type="submit">DELETE</button>
-                            </form>
-                        </td>
-                    </tr>                        
-                <% }); %>
-            </tbody>
-        </table>
-        <button><a href="/workorders">View All Work Orders</a></button> <!-- View all including completed work orders -->
-    </div>
-    <div>
         <!-- This can be moved to a new page but I think it makes sense to submit straight from home screen -->
         <form id="addWorkOrder" action="/workorders" method="POST">
             <fieldset>
@@ -130,6 +63,63 @@
                 <input type="submit" value:"Add Work Order">
             </fieldset> 
         </form>
+    </div>
+    <div>
+        <!-- This will pull all open work orders into a table -->
+        <table class="workOrders">
+            <legend>Current Open Work Orders</legend>
+            <thead>
+                <th>Order Number</th>
+                <th>Zookeeper</th>
+                <th>Location</th>
+                <th>Task</th>
+                <th>Supply Name</th>
+                <th>Available Date</th>
+                <th>Due by</th>
+                <th>Available</th>
+                <th>Accepted</th>
+                <th>Overdue</th>
+                <th>Complete</th>
+            </thead>
+            <tbody>
+                <% workOrders.forEach(function(ticket) { %>
+                    <tr>
+                        <td> <%= ticket.work_order_id %> </td>
+                        <td> <%= ticket.first_name + " " + ticket.last_name %> </td>
+                        <% if (ticket.enclosure_id === null) { %>
+                            <td>None</td>
+                        <% } else { %>
+                            <td><%= ticket.location %></td>
+                        <% } %>
+                        <td> <%= ticket.task_name %> </td>
+                        <td> <%= ticket.supply_name %> </td>
+                        <td> <%= ticket.available_time %> </td>
+                        <td> <%= ticket.overdue_time %> </td>
+                        <% if (ticket.available === 1) { %>
+                            <td>Available</td>
+                        <% } else { %>
+                            <td>Not Available</td>
+                        <% } %>
+                        <% if (ticket.accepted_task === 1) { %>
+                            <td>Accepted</td>
+                        <% } else { %>
+                            <td>Not Accepted</td>
+                        <% } %>
+                        <% if (ticket.overdue_status === 1) { %>
+                            <td>Late</td>
+                        <% } else { %>
+                            <td>On Time</td>
+                        <% } %>
+                        <% if (ticket.completed_task === 1) { %>
+                            <td>Closed</td>
+                        <% } else { %>
+                            <td>Open</td>
+                        <% } %>
+                    </tr>                        
+                <% }); %>
+            </tbody>
+        </table>
+        <button><a href="/workorders">View All Work Orders</a></button> <!-- View all including completed work orders -->
     </div>
     
 <%- include("partials/footer") %>

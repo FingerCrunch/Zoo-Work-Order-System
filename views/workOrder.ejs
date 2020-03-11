@@ -18,7 +18,7 @@
             <th>Supply Name</th>
             <th>Available Date</th>
             <th>Overdue Date</th>
-            <th>Available</th>
+            <th>Status</th>
             <th>Accepted</th>
             <th>Overdue</th>
             <th>Complete</th>
@@ -43,24 +43,24 @@
                     <td> <%= ticket.available_time %> </td>
                     <td> <%= ticket.overdue_time %> </td>
                     <% if (ticket.available === 1) { %>
-                        <td>YES</td>
+                        <td>Available</td>
                     <% } else { %>
-                        <td>NO</td>
+                        <td>Not Available</td>
                     <% } %>
                     <% if (ticket.accepted_task === 1) { %>
-                        <td>YES</td>
+                        <td>Accepted</td>
                     <% } else { %>
-                        <td>NO</td>
+                        <td>Not Accepted</td>
                     <% } %>
                     <% if (ticket.overdue_status === 1) { %>
-                        <td>YES</td>
+                        <td>Late</td>
                     <% } else { %>
-                        <td>NO</td>
+                        <td>On Time</td>
                     <% } %>
                     <% if (ticket.completed_task === 1) { %>
-                        <td>YES</td>
+                        <td>Closed</td>
                     <% } else { %>
-                        <td>NO</td>
+                        <td>Open</td>
                     <% } %>
                 </tr>
             <% }); %>
