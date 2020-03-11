@@ -85,10 +85,16 @@
                         <% } else { %>
                             <td>NO</td>
                         <% } %>
-                    </tr>
+                        <td><form action="/workorders/edit/<%=ticket.work_order_id%>" method="GET">
+                            <button type="submit">EDIT</button>
+                            </form>
+                        </td>
+                        <td><form action="/workorders/delete/<%=ticket.work_order_id%>?_method=DELETE" method="POST">
+                            <button type="submit">DELETE</button>
+                            </form>
+                        </td>
+                    </tr>                        
                 <% }); %>
-                <tr>
-                </tr>
             </tbody>
         </table>
         <button><a href="/workorders">View All Work Orders</a></button> <!-- View all including completed work orders -->

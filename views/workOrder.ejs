@@ -7,6 +7,7 @@
     <!-- This will pull all open work orders into a table -->
     <table class="workOrders">
         <legend>Work Order History</legend>
+        <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
         <input type="text" class="form-control" id="myInput" placeholder="Search"> <br>
         <thead>
             <th>Order Number</th>
@@ -21,8 +22,6 @@
             <th>Accepted</th>
             <th>Overdue</th>
             <th>Complete</th>
-            <th>Edit</th>
-            <th>Delete</th>
         </thead>
         <tbody id="myTable">
             <% workOrders.forEach(function(ticket) { %>
@@ -63,18 +62,11 @@
                     <% } else { %>
                         <td>NO</td>
                     <% } %>
-                    <td><form action="/workorders/edit/<%=ticket.work_order_id%>" method="GET">
-                        <button type="submit">EDIT</button>
-                        </form>
-                    </td>
-                    <td><form action="/workorders/delete/<%=ticket.work_order_id%>?_method=DELETE" method="POST">
-                        <button type="submit">DELETE</button>
-                        </form>
-                    </td>
                 </tr>
             <% }); %>
         </tbody>
     </table>
+    <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
     <script>
         $(document).ready(function(){
           $("#myInput").on("keyup", function() {
