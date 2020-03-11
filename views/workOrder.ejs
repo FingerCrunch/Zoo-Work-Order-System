@@ -21,6 +21,7 @@
                 <th>Accepted</th>
                 <th>Overdue</th>
                 <th>Complete</th>
+                <th>Delete</th>
             </thead>
             <tbody id="myTable">
                 <% workOrders.forEach(function(ticket) { %>
@@ -61,12 +62,16 @@
                         <% } else { %>
                             <td>Open</td>
                         <% } %>
+                        <td><form action="/workorders/delete/<%=ticket.work_order_id%>?_method=DELETE" method="POST">
+                            <button type="submit">DELETE</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
     </div>    
-    
+
     <!-- https://www.w3schools.com/bootstrap/bootstrap_filters.asp# -->
     <script>
         $(document).ready(function(){
