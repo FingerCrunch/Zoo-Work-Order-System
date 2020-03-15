@@ -1,48 +1,52 @@
 <%- include("partials/header") %>
 
 <body>
-    <h1>Zoo Keepers</h1>
-    <table>
-        <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Phone Number</th>
-            <th>Supervisor</th>
-            <th>OnShift?</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </thead>
-        <% zookeepers.forEach(function(employee) { %>
-            <tr>
-                <td> <%= employee.zookeeper_id %> </td>
-                <td> <%= employee.first_name + " " + employee.last_name %> </td>
-                <td> <%= employee.phone_number %> </td>
-                <td> <%= employee.supervisor %> </td>
-                <% if (employee.onshift_status === 1) { %>
-                    <td>YES</td>
-                <% } else {%>
-                    <td>NO</td>
-                <% } %>
-                <td><form action="/zookeepers/edit/<%=employee.zookeeper_id%>" method="GET">
-                    <button type="submit">EDIT</button>
-                    </form>
-                </td>
-                <td><form action="/zookeepers/delete/<%=employee.zookeeper_id%>?_method=DELETE" method="POST">
-                    <button type="submit">DELETE</button>
-                    </form>
-                </td>
-            </tr>
-        <% }); %>
-    </table><br>
-    <form id="addZookeeper" action="/zookeepers" method="post">
-        <fieldset>
-            <legend>Add New Zookeeper</legend>
-            <input type="text" name="fname" placeholder="First Name"><br>
-            <input type="text" name="lname" placeholder="Last Name"><br>
-            <input type="number" name="phoneNumber" placeholder="Phone Number"><br>
-            <input type="text" name="supervisor" placeholder="Supervisor"><br>
-            <input type="submit" value="Add Zookeeper">
-        </fieldset>
-     </form><br>
-     <button><a href="/">Return Home</a></button>
+    <div>
+        <legend>Zoo Keepers</legend>
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Supervisor</th>
+                <th>OnShift?</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </thead>
+            <% zookeepers.forEach(function(employee) { %>
+                <tr>
+                    <td> <%= employee.zookeeper_id %> </td>
+                    <td> <%= employee.first_name + " " + employee.last_name %> </td>
+                    <td> <%= employee.phone_number %> </td>
+                    <td> <%= employee.supervisor %> </td>
+                    <% if (employee.onshift_status === 1) { %>
+                        <td>YES</td>
+                    <% } else {%>
+                        <td>NO</td>
+                    <% } %>
+                    <td><form action="/zookeepers/edit/<%=employee.zookeeper_id%>" method="GET">
+                        <button type="submit">EDIT</button>
+                        </form>
+                    </td>
+                    <td><form action="/zookeepers/delete/<%=employee.zookeeper_id%>?_method=DELETE" method="POST">
+                        <button type="submit">DELETE</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </table>
+    </div>
+    <div>
+        <form id="addZookeeper" action="/zookeepers" method="post">
+            <fieldset>
+                <legend>Add New Zookeeper</legend>
+                <input type="text" name="fname" placeholder="First Name"><br>
+                <input type="text" name="lname" placeholder="Last Name"><br>
+                <input type="number" name="phoneNumber" placeholder="Phone Number"><br>
+                <input type="text" name="supervisor" placeholder="Supervisor"><br>
+                <input type="submit" value="Add Zookeeper">
+            </fieldset>
+         </form>
+    </div>
+    
 <%- include("partials/footer") %>

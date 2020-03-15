@@ -154,15 +154,21 @@ app.put("/zookeepers/edit/:id", function(req, res){
 /* SHOW ROUTE - Show All Work Orders OR Individual Specific Work Order Details */
 app.get("/workorders", function(req, res) {
     var sql = 'SELECT wo.work_order_id, zk.first_name, zk.last_name, ae.location, ae.species, wo.task_name, s.supply_name, DATE_FORMAT(wo.available_time, "%m-%d-%Y") AS available_time, DATE_FORMAT(wo.overdue_time, "%m-%d-%Y") AS overdue_time, wo.available, wo.accepted_task, wo.overdue_status, wo.completed_task FROM Work_Orders wo INNER JOIN Zoo_Keepers AS zk ON wo.zookeeper_id = zk.zookeeper_id LEFT JOIN Animal_Enclosures AS ae on wo.enclosure_id = ae.enclosure_id INNER JOIN Order_Supplies AS os ON wo.work_order_id = os.work_order_id INNER JOIN Supplies AS s ON s.supply_id = os.supply_id';
+    var sql2 = 'SELECT * FROM Animal_Enclosures';
     pool.query(sql, function(err, workOrders) {
         if (err) {
             console.log(JSON.stringify(err))
             res.write(JSON.stringify(err));
             res.end();
-        } else {
-            console.log(workOrders);
-            res.render("workOrder", {workOrders: workOrders});
-        }
+        } 
+        pool.query(sql2, function(err2, enclosures) {
+            if (err2) {
+                console.log(JSON.stringify(err2))
+                res.write(JSON.stringify(err2));
+                res.end();
+            } 
+            res.render("workOrder", {workOrders: workOrders, enclosures:enclosures});
+        });
     });
 });
 
@@ -217,88 +223,6 @@ app.delete("/workorders/delete/:id", function(req, res) {
             res.redirect("/workorders");
         }
     });
-});
-
-/* SHOW ROUTE - Show Edit Work Orders Page */
-app.get("/workorders/edit/:id", function(req, res) {
-    var sql = "SELECT * FROM Work_Orders WHERE work_order_id = ?",
-        sql2 = "SELECT * FROM Supplies",
-        sql3 = "SELECT * FROM Animal_Enclosures",
-        sql4 = "SELECT * FROM Zoo_Keepers"; 
-    var inserts = [req.params.id];
-    pool.query(sql, inserts, function(err, workOrders) {
-        if(err) {
-            console.log(JSON.stringify(err))
-            res.write(JSON.stringify(err));
-            res.end();
-        }
-        pool.query(sql2, function(err2, supplies, field2) {
-            if(err2) {
-                console.log(JSON.stringify(err2))
-                res.write(JSON.stringify(err2));
-                res.end();
-            }
-            pool.query(sql3, function(err3, enclosures, field3) {
-                if (err3) {
-                    console.log(JSON.stringify(err3))
-                    res.write(JSON.stringify(err3));
-                    res.end();
-                }
-                pool.query(sql4, function(err4, zookeepers, field4) {
-                    if (err4) {
-                        console.log(JSON.stringify(err4))
-                        res.write(JSON.stringify(err4));
-                        res.end();
-                    }
-                    res.render("editWorkOrders", {workOrders: workOrders, zookeepers:zookeepers, enclosures: enclosures, supplies: supplies});
-                });
-            });
-        });
-    });
-});
-
-
-/* EDIT ROUTE - Edit Supply Row in Database */
-app.put("/workorders/edit/:id", function(req, res){
-    var sql = "UPDATE Work_Orders SET zookeeper_id=?, enclosure_id=?, task_name=?, overdue_status=?, completed_task=? WHERE work_order_id=?;";
-    var sql2 = "INSERT INTO Order_Supplies (work_order_id, supply_id) VALUES ";
-    var sql3 = "DELETE FROM Order_Supplies WHERE work_order_id=?;";
-    if(req.body.enclosure_id === 'NULL'){
-        var inserts = [req.body.zookeeper_id, req.body.task_name, req.params.id];
-    }else{
-    var inserts = [req.body.zookeeper_id, req.body.enclosure_id, req.body.task_name, req.body.overdue_status, req.body.completed_task, req.params.id];}
-    var inserts2 = [req.params.id];
-    pool.query(sql, inserts, function(err, results, fields) {
-        if(err){
-            console.log(JSON.stringify(err))
-            res.write(JSON.stringify(err));
-            res.end();
-        }
-        else if(req.body.supply_id !== undefined){
-            if(Array.isArray(req.body.supply_id)){
-                req.body.supply_id.forEach(function(item){
-                    sql2 = sql2 + "(" + req.params.id + "," + item + ")" + ",";
-                });
-                sql2 = sql2.substring(0, sql2.length - 1);
-                }else{
-                    sql2 = sql2 + "(" + req.params.id + "," + req.body.supply_id + ")";
-                }
-                pool.query(sql3, inserts2, function(err, results, fields){
-                    if(err){
-                        console.log(JSON.stringify(err))
-                        res.write(JSON.stringify(err));
-                        res.end();
-                    }
-                    pool.query(sql2, function(err2, rows2, field2) {
-                        if(err2) {
-                            console.log(JSON.stringify(err2))
-                            res.write(JSON.stringify(err2));
-                            res.end();
-                        }
-            });
-        });
-    }});
-    res.redirect("/workorders");
 });
 
 /*********************************************************
